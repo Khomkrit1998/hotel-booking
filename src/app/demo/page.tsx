@@ -7,12 +7,12 @@ import { Motion, StaggerContainer } from "@/components/common/Motion"
 export default function DemoMotion() {
   const [count, setCount] = useState(0);
 
-  const cardData = [
-    { title: "Slide Up Animation", description: "เคลื่อนไหวจากล่างขึ้นบน" },
-    { title: "Slide Left Animation", description: "เคลื่อนไหวจากซ้ายไปขวา" },
-    { title: "Scale Animation", description: "เคลื่อนไหวแบบขยาย-หดตัว" },
-    { title: "Rotate Animation", description: "เคลื่อนไหวแบบหมุน" },
-  ];
+  // const cardData = [
+  //   { title: "Slide Up Animation", description: "เคลื่อนไหวจากล่างขึ้นบน" },
+  //   { title: "Slide Left Animation", description: "เคลื่อนไหวจากซ้ายไปขวา" },
+  //   { title: "Scale Animation", description: "เคลื่อนไหวแบบขยาย-หดตัว" },
+  //   { title: "Rotate Animation", description: "เคลื่อนไหวแบบหมุน" },
+  // ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-cyan-50 p-8">

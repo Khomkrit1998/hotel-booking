@@ -10,7 +10,6 @@ import Preloader from "@/components/common/Preload";
 
 export default function HotelLandingPage() {
   const [isLoading, setIsLoading] = useState(true);
-  const [isPageReady, setIsPageReady] = useState(false);
 
   // Simulate loading time and preload assets
   useEffect(() => {
@@ -42,7 +41,6 @@ export default function HotelLandingPage() {
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
       setIsLoading(false);
-      setTimeout(() => setIsPageReady(true), 100);
     };
 
     preloadAssets();

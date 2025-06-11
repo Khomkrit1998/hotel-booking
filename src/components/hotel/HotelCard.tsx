@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { MapPin, Star, Wifi, Car, Coffee, Utensils, Users } from "lucide-react";
 import { Hotel } from "@/types/hotel";
-import { Motion, StaggerContainer } from "../common/Motion";
+import { Motion } from "../common/Motion";
 
 interface HotelCardProps {
   hotel: Hotel;

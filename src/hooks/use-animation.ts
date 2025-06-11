@@ -5,6 +5,10 @@ export function useAnimation() {
   const elementRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    const target = elementRef.current; // ✅ copy ref ไว้ในตัวแปร
+
+    if (!target) return;
+
     const observer = new IntersectionObserver(
       ([entry]) => {
         setIsVisible(entry.isIntersecting);
@@ -12,14 +16,10 @@ export function useAnimation() {
       { threshold: 0.1, rootMargin: "50px" }
     );
 
-    if (elementRef.current) {
-      observer.observe(elementRef.current);
-    }
+    observer.observe(target);
 
     return () => {
-      if (elementRef.current) {
-        observer.unobserve(elementRef.current);
-      }
+      observer.unobserve(target); // ✅ ใช้ target ที่เก็บไว้
     };
   }, []);
 

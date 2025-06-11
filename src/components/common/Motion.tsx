@@ -19,7 +19,7 @@ export function Motion({ children, initial = "hidden", animate = "visible", whil
   const [isPressed, setIsPressed] = useState(false);
 
   const getAnimationClass = () => {
-    let classes = [];
+    const classes = [];
 
     // Initial & Animate states
     if (isInVisible) {
