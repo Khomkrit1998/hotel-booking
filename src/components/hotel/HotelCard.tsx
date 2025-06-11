@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -31,7 +32,13 @@ export function HotelCard({ hotel, onBookNow, className = "" }: HotelCardProps) 
   return (
     <Card className={`group overflow-hidden border-0 shadow-lg hover:shadow-2xl transition-all duration-500 hover:-translate-y-2 ${className}`}>
       <div className="relative overflow-hidden">
-        <img src={hotel.image} alt={hotel.name} className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500" />
+        <Image
+          src={hotel.image}
+          alt={hotel.name}
+          width={800} // ปรับตามขนาดจริง
+          height={320} // ปรับตามขนาดจริง
+          className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-500"
+        />
         <div className="absolute top-4 left-4">
           <Badge className="bg-white/90 text-gray-800 hover:bg-white">ราคาพิเศษ</Badge>
         </div>
