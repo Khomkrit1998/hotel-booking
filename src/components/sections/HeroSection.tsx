@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+
 import { SearchForm } from "@/components/search/SearchForm";
 import { StatsSection } from "./StatsSection";
 import { SearchFormData } from "@/types/hotel";
