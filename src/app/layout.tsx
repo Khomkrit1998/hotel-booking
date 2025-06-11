@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { prompt, poppins } from "@/lib/fonts";
-import "./globals.css";
+import "./styles/globals.css";
+import "./styles/animate.css";
 import Header from "@/components/layout/MiniHeader";
 
 export const metadata: Metadata = {

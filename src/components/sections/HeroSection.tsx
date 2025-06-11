@@ -3,6 +3,7 @@
 import { SearchForm } from "@/components/search/SearchForm";
 import { StatsSection } from "./StatsSection";
 import { SearchFormData } from "@/types/hotel";
+import { Motion } from "../common/Motion";
 
 interface HeroSectionProps {
   title?: string;
@@ -192,17 +193,24 @@ export function HeroSection({ title = "ค้นพบโรงแรม", subti
       `}</style>
 
       <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center mb-16">
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
-            <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">{title}</span>
-            <br />
-            <span className="text-gray-800">ในฝันของคุณ</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">{subtitle}</p>
-        </div>
+        <Motion initial="fadeIn" animate="fadeIn" transition="smooth">
+          <div className="text-center mb-16">
+            <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold mb-6">
+              <span className="bg-gradient-to-r from-blue-600 via-purple-600 to-cyan-500 bg-clip-text text-transparent">{title}</span>
+              <br />
+              <span className="text-gray-800">ในฝันของคุณ</span>
+            </h1>
+            <p className="text-xl md:text-2xl text-gray-600 mb-8 max-w-3xl mx-auto leading-relaxed">{subtitle}</p>
+          </div>
+        </Motion>
 
-        <SearchForm onSearch={onSearch} />
-        <StatsSection />
+        <Motion animate="scaleIn" delay={300}>
+          <SearchForm onSearch={onSearch} />
+        </Motion>
+
+        <Motion animate="slideUp" delay={100} whileHover="lift" transition="spring">
+          <StatsSection />
+        </Motion>
       </div>
     </section>
   );
