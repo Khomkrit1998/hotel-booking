@@ -1,0 +1,3545 @@
+<!DOCTYPE html>
+<html lang="th">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking System - ER Diagram & Flowcharts</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: 100vh;
+            color: #1e293b;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            border-radius: 20px;
+            color: white;
+            box-shadow: 0 20px 40px rgba(59, 130, 246, 0.2);
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 400px;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid #e0f2fe;
+            border-top: 4px solid #3b82f6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #dc2626;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .success {
+            background: #f0fdf4;
+            border: 1px solid #bbf7d0;
+            color: #16a34a;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            display: none;
+        }
+
+        .tab-navigation {
+            display: flex;
+            background: white;
+            border-radius: 16px;
+            padding: 8px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            gap: 4px;
+        }
+
+        .tab-button {
+            padding: 12px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 500;
+            white-space: nowrap;
+            transition: all 0.3s ease;
+            color: #64748b;
+            min-width: 140px;
+        }
+
+        .tab-button.active {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .tab-button:hover:not(.active) {
+            background: #f1f5f9;
+            color: #3b82f6;
+            transform: translateY(-2px);
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .diagram-container {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+
+        .diagram-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 20px;
+            text-align: center;
+            border-bottom: 3px solid #3b82f6;
+            padding-bottom: 10px;
+        }
+
+        .diagram-description {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3b82f6;
+        }
+
+        .svg-container {
+            width: 100%;
+            min-height: 600px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #fafafa;
+            border-radius: 12px;
+            border: 2px dashed #e2e8f0;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .svg-container:hover {
+            border-color: #3b82f6;
+            background: #f8fafc;
+        }
+
+        .entity {
+            fill: #ffffff;
+            stroke: #3b82f6;
+            stroke-width: 2;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.1));
+            transition: all 0.3s ease;
+        }
+
+        .entity:hover {
+            fill: #f8fafc;
+            stroke: #1e40af;
+        }
+
+        .entity-title {
+            fill: #1e293b;
+            font-weight: bold;
+            font-size: 14px;
+            text-anchor: middle;
+        }
+
+        .entity-field {
+            fill: #64748b;
+            font-size: 11px;
+            text-anchor: start;
+        }
+
+        .relationship-line {
+            stroke: #6366f1;
+            stroke-width: 2;
+            marker-end: url(#arrowhead);
+            transition: all 0.3s ease;
+        }
+
+        .relationship-line:hover {
+            stroke: #4338ca;
+            stroke-width: 3;
+        }
+
+        .relationship-text {
+            fill: #6366f1;
+            font-size: 10px;
+            text-anchor: middle;
+            font-weight: bold;
+        }
+
+        .process-box {
+            fill: #ffffff;
+            stroke: #06b6d4;
+            stroke-width: 2;
+            rx: 8;
+            transition: all 0.3s ease;
+        }
+
+        .process-box:hover {
+            fill: #f0fdfa;
+            stroke: #0891b2;
+        }
+
+        .decision-diamond {
+            fill: #fef3c7;
+            stroke: #f59e0b;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+
+        .decision-diamond:hover {
+            fill: #fde68a;
+            stroke: #d97706;
+        }
+
+        .start-end-circle {
+            fill: #dcfce7;
+            stroke: #16a34a;
+            stroke-width: 2;
+            transition: all 0.3s ease;
+        }
+
+        .start-end-circle:hover {
+            fill: #bbf7d0;
+            stroke: #15803d;
+        }
+
+        .flow-text {
+            fill: #1e293b;
+            font-size: 11px;
+            text-anchor: middle;
+            font-weight: 500;
+        }
+
+        .flow-line {
+            stroke: #64748b;
+            stroke-width: 2;
+            marker-end: url(#arrowhead2);
+            transition: all 0.3s ease;
+        }
+
+        .flow-line:hover {
+            stroke: #475569;
+            stroke-width: 3;
+        }
+
+        .api-section {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .api-endpoint {
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            margin: 15px 0;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .api-endpoint:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .api-header {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            padding: 15px 20px;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .api-method {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .api-body {
+            padding: 20px;
+        }
+
+        .api-description {
+            color: #64748b;
+            margin-bottom: 15px;
+        }
+
+        .api-params {
+            background: #f1f5f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+        }
+
+        .api-params h4 {
+            color: #1e293b;
+            margin-bottom: 10px;
+        }
+
+        .param-item {
+            background: white;
+            padding: 10px;
+            margin: 8px 0;
+            border-radius: 6px;
+            border-left: 3px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        .param-item:hover {
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .param-name {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .param-type {
+            color: #6366f1;
+            font-size: 0.9rem;
+        }
+
+        .param-desc {
+            color: #64748b;
+            font-size: 0.9rem;
+            margin-top: 4px;
+        }
+
+        .business-rules {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .rule-category {
+            margin-bottom: 25px;
+            padding: 20px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #3b82f6;
+            transition: all 0.3s ease;
+        }
+
+        .rule-category:hover {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .rule-category h3 {
+            color: #1e293b;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .rule-item {
+            background: white;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .rule-item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .rule-item h4 {
+            color: #3b82f6;
+            margin-bottom: 8px;
+        }
+
+        .rule-item p {
+            color: #64748b;
+            line-height: 1.6;
+        }
+
+        .legend {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #e2e8f0;
+        }
+
+        .legend h4 {
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .legend-item:hover {
+            transform: translateX(5px);
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #64748b;
+        }
+
+        .responsive-table {
+            width: 100%;
+            overflow-x: auto;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .data-table th {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            padding: 15px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .data-table td {
+            padding: 12px 15px;
+            border-bottom: 1px solid #e2e8f0;
+            transition: all 0.3s ease;
+        }
+
+        .data-table tr:hover {
+            background: #f8fafc;
+            transform: scale(1.01);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #3b82f6;
+            margin-bottom: 10px;
+        }
+
+        .stat-label {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 10px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            border-radius: 4px;
+            transition: width 1s ease;
+        }
+
+        .interactive-demo {
+            background: #f8fafc;
+            border: 2px dashed #3b82f6;
+            border-radius: 12px;
+            padding: 30px;
+            text-align: center;
+            margin: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .interactive-demo:hover {
+            background: #f1f5f9;
+            border-color: #1e40af;
+        }
+
+        .demo-button {
+            background: linear-gradient(135deg, #3b82f6 0%, #06b6d4 100%);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 10px;
+        }
+
+        .demo-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .tab-navigation {
+                flex-direction: column;
+                gap: 8px;
+            }
+
+            .tab-button {
+                min-width: auto;
+                text-align: center;
+            }
+
+            .diagram-container {
+                padding: 20px;
+            }
+
+            .svg-container {
+                min-height: 400px;
+            }
+
+            .api-header {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Enhanced animations */
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.5;
+            }
+        }
+
+        .pulse {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .zoom-on-hover {
+            transition: transform 0.3s ease;
+        }
+
+        .zoom-on-hover:hover {
+            transform: scale(1.05);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header floating">
+            <h1>🏨 Hotel Booking System</h1>
+            <p>ER Diagram, Flowcharts & System Architecture</p>
+        </div>
+
+        <div class="error" id="errorMessage">
+            เกิดข้อผิดพลาดในการโหลดข้อมูล กรุณาลองใหม่อีกครั้ง
+        </div>
+
+        <div class="success" id="successMessage">
+            โหลดข้อมูลสำเร็จ!
+        </div>
+
+        <div class="tab-navigation">
+            <button class="tab-button active" onclick="showTab('er-diagram')">📊 ER Diagram</button>
+            <button class="tab-button" onclick="showTab('booking-flow')">🔄 Booking Process</button>
+            <button class="tab-button" onclick="showTab('payment-flow')">💳 Payment Process</button>
+            <button class="tab-button" onclick="showTab('user-journey')">🗺️ User Journey</button>
+            <button class="tab-button" onclick="showTab('architecture')">🏗️ System Architecture</button>
+            <button class="tab-button" onclick="showTab('api-docs')">📡 API Documentation</button>
+            <button class="tab-button" onclick="showTab('business-rules')">⚖️ Business Rules</button>
+            <button class="tab-button" onclick="showTab('demo')">🎮 Interactive Demo</button>
+        </div>
+
+        <!-- ER Diagram Tab -->
+        <div id="er-diagram" class="tab-content active">
+            <div class="diagram-container">
+                <h2 class="diagram-title">Entity Relationship Diagram</h2>
+                <div class="diagram-description">
+                    <h3>📊 ER Diagram Overview</h3>
+                    <p>แผนภาพแสดงความสัมพันธ์ระหว่าง entities ต่างๆ ในระบบจองโรงแรมออนไลน์ ประกอบด้วย Users, Hotels,
+                        Rooms, Bookings, Payments และ Reviews</p>
+                </div>
+
+                <div class="loading" id="er-loading">
+                    <div class="loading-spinner"></div>
+                    <p>กำลังโหลด ER Diagram...</p>
+                </div>
+
+                <div class="svg-container" id="er-svg-container" style="display: none;">
+                    <svg width="1200" height="800" viewBox="0 0 1200 800">
+                        <defs>
+                            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#6366f1" />
+                            </marker>
+                        </defs>
+
+                        <!-- Users Entity -->
+                        <rect x="50" y="50" width="180" height="240" class="entity zoom-on-hover" />
+                        <text x="140" y="75" class="entity-title">👤 USERS</text>
+                        <line x1="60" y1="85" x2="220" y2="85" stroke="#3b82f6" stroke-width="1" />
+                        <text x="70" y="105" class="entity-field">🔑 user_id (PK)</text>
+                        <text x="70" y="125" class="entity-field">📧 email</text>
+                        <text x="70" y="145" class="entity-field">🔒 password_hash</text>
+                        <text x="70" y="165" class="entity-field">👤 first_name</text>
+                        <text x="70" y="185" class="entity-field">👤 last_name</text>
+                        <text x="70" y="205" class="entity-field">📱 phone</text>
+                        <text x="70" y="225" class="entity-field">✅ email_verified</text>
+                        <text x="70" y="245" class="entity-field">📅 created_at</text>
+                        <text x="70" y="265" class="entity-field">🕒 last_login_at</text>
+
+                        <!-- Hotels Entity -->
+                        <rect x="300" y="50" width="180" height="260" class="entity zoom-on-hover" />
+                        <text x="390" y="75" class="entity-title">🏨 HOTELS</text>
+                        <line x1="310" y1="85" x2="470" y2="85" stroke="#3b82f6" stroke-width="1" />
+                        <text x="320" y="105" class="entity-field">🔑 hotel_id (PK)</text>
+                        <text x="320" y="125" class="entity-field">🏨 name</text>
+                        <text x="320" y="145" class="entity-field">📍 address</text>
+                        <text x="320" y="165" class="entity-field">🌆 city</text>
+                        <text x="320" y="185" class="entity-field">🌍 country</text>
+                        <text x="320" y="205" class="entity-field">⭐ rating</text>
+                        <text x="320" y="225" class="entity-field">📝 description</text>
+                        <text x="320" y="245" class="entity-field">🖼️ images</text>
+                        <text x="320" y="265" class="entity-field">🎯 amenities</text>
+                        <text x="320" y="285" class="entity-field">🌐 latitude</text>
+                        <text x="320" y="305" class="entity-field">🌐 longitude</text>
+
+                        <!-- Rooms Entity -->
+                        <rect x="550" y="50" width="180" height="280" class="entity zoom-on-hover" />
+                        <text x="640" y="75" class="entity-title">🛏️ ROOMS</text>
+                        <line x1="560" y1="85" x2="720" y2="85" stroke="#3b82f6" stroke-width="1" />
+                        <text x="570" y="105" class="entity-field">🔑 room_id (PK)</text>
+                        <text x="570" y="125" class="entity-field">🔗 hotel_id (FK)</text>
+                        <text x="570" y="145" class="entity-field">🏷️ room_number</text>
+                        <text x="570" y="165" class="entity-field">🛏️ room_type</text>
+                        <text x="570" y="185" class="entity-field">💰 price_per_night</text>
+                        <text x="570" y="205" class="entity-field">👥 max_occupancy</text>
+                        <text x="570" y="225" class="entity-field">🛁 amenities</text>
+                        <text x="570" y="245" class="entity-field">✅ available</text>
+                        <text x="570" y="265" class="entity-field">🖼️ images</text>
+                        <text x="570" y="285" class="entity-field">📏 size_sqm</text>
+                        <text x="570" y="305" class="entity-field">🏢 floor_number</text>
+
+                        <!-- Bookings Entity -->
+                        <rect x="300" y="380" width="180" height="300" class="entity zoom-on-hover" />
+                        <text x="390" y="405" class="entity-title">📋 BOOKINGS</text>
+                        <line x1="310" y1="415" x2="470" y2="415" stroke="#3b82f6" stroke-width="1" />
+                        <text x="320" y="435" class="entity-field">🔑 booking_id (PK)</text>
+                        <text x="320" y="455" class="entity-field">🔗 user_id (FK)</text>
+                        <text x="320" y="475" class="entity-field">🔗 room_id (FK)</text>
+                        <text x="320" y="495" class="entity-field">📅 check_in_date</text>
+                        <text x="320" y="515" class="entity-field">📅 check_out_date</text>
+                        <text x="320" y="535" class="entity-field">👥 guest_count</text>
+                        <text x="320" y="555" class="entity-field">💰 total_amount</text>
+                        <text x="320" y="575" class="entity-field">📊 status</text>
+                        <text x="320" y="595" class="entity-field">💳 payment_status</text>
+                        <text x="320" y="615" class="entity-field">🔖 confirmation_code</text>
+                        <text x="320" y="635" class="entity-field">📝 special_requests</text>
+                        <text x="320" y="655" class="entity-field">📅 created_at</text>
+                        <text x="320" y="675" class="entity-field">📅 updated_at</text>
+
+                        <!-- Payments Entity -->
+                        <rect x="50" y="380" width="180" height="260" class="entity zoom-on-hover" />
+                        <text x="140" y="405" class="entity-title">💳 PAYMENTS</text>
+                        <line x1="60" y1="415" x2="220" y2="415" stroke="#3b82f6" stroke-width="1" />
+                        <text x="70" y="435" class="entity-field">🔑 payment_id (PK)</text>
+                        <text x="70" y="455" class="entity-field">🔗 booking_id (FK)</text>
+                        <text x="70" y="475" class="entity-field">💰 amount</text>
+                        <text x="70" y="495" class="entity-field">💱 currency</text>
+                        <text x="70" y="515" class="entity-field">💳 payment_method</text>
+                        <text x="70" y="535" class="entity-field">📊 status</text>
+                        <text x="70" y="555" class="entity-field">🔖 transaction_id</text>
+                        <text x="70" y="575" class="entity-field">📅 payment_date</text>
+                        <text x="70" y="595" class="entity-field">📋 gateway_response</text>
+                        <text x="70" y="615" class="entity-field">📝 notes</text>
+
+                        <!-- Reviews Entity -->
+                        <rect x="550" y="380" width="180" height="260" class="entity zoom-on-hover" />
+                        <text x="640" y="405" class="entity-title">⭐ REVIEWS</text>
+                        <line x1="560" y1="415" x2="720" y2="415" stroke="#3b82f6" stroke-width="1" />
+                        <text x="570" y="435" class="entity-field">🔑 review_id (PK)</text>
+                        <text x="570" y="455" class="entity-field">🔗 user_id (FK)</text>
+                        <text x="570" y="475" class="entity-field">🔗 hotel_id (FK)</text>
+                        <text x="570" y="495" class="entity-field">🔗 booking_id (FK)</text>
+                        <text x="570" y="515" class="entity-field">⭐ rating</text>
+                        <text x="570" y="535" class="entity-field">📝 comment</text>
+                        <text x="570" y="555" class="entity-field">📊 category_ratings</text>
+                        <text x="570" y="575" class="entity-field">📅 review_date</text>
+                        <text x="570" y="595" class="entity-field">✅ verified</text>
+                        <text x="570" y="615" class="entity-field">👍 helpful_count</text>
+                        <text x="570" y="635" class="entity-field">📊 status</text>
+
+                        <!-- Receipts Entity (New) -->
+                        <rect x="780" y="380" width="180" height="220" class="entity zoom-on-hover" />
+                        <text x="870" y="405" class="entity-title">🧾 RECEIPTS</text>
+                        <line x1="790" y1="415" x2="950" y2="415" stroke="#3b82f6" stroke-width="1" />
+                        <text x="800" y="435" class="entity-field">🔑 receipt_id (PK)</text>
+                        <text x="800" y="455" class="entity-field">🔗 booking_id (FK)</text>
+                        <text x="800" y="475" class="entity-field">🔗 payment_id (FK)</text>
+                        <text x="800" y="495" class="entity-field">🔖 receipt_number</text>
+                        <text x="800" y="515" class="entity-field">💰 amount</text>
+                        <text x="800" y="535" class="entity-field">📅 issued_date</text>
+                        <text x="800" y="555" class="entity-field">📁 file_path</text>
+                        <text x="800" y="575" class="entity-field">🌐 download_url</text>
+
+                        <!-- Relationships -->
+                        <!-- Users to Bookings -->
+                        <line x1="230" y1="170" x2="300" y2="520" class="relationship-line" />
+                        <text x="265" y="345" class="relationship-text">1:N</text>
+                        <text x="250" y="330" class="relationship-text">makes</text>
+
+                        <!-- Hotels to Rooms -->
+                        <line x1="480" y1="180" x2="550" y2="180" class="relationship-line" />
+                        <text x="515" y="175" class="relationship-text">1:N</text>
+                        <text x="510" y="160" class="relationship-text">has</text>
+
+                        <!-- Rooms to Bookings -->
+                        <line x1="550" y1="340" x2="480" y2="520" class="relationship-line" />
+                        <text x="515" y="430" class="relationship-text">1:N</text>
+                        <text x="500" y="415" class="relationship-text">booked in</text>
+
+                        <!-- Bookings to Payments -->
+                        <line x1="300" y1="520" x2="230" y2="520" class="relationship-line" />
+                        <text x="265" y="515" class="relationship-text">1:N</text>
+                        <text x="250" y="500" class="relationship-text">has</text>
+
+                        <!-- Users to Reviews -->
+                        <line x1="230" y1="290" x2="550" y2="520" class="relationship-line" />
+                        <text x="390" y="405" class="relationship-text">1:N</text>
+                        <text x="375" y="390" class="relationship-text">writes</text>
+
+                        <!-- Hotels to Reviews -->
+                        <line x1="480" y1="310" x2="550" y2="520" class="relationship-line" />
+                        <text x="515" y="415" class="relationship-text">1:N</text>
+                        <text x="500" y="400" class="relationship-text">receives</text>
+
+                        <!-- Bookings to Reviews -->
+                        <line x1="480" y1="580" x2="550" y2="540" class="relationship-line" />
+                        <text x="515" y="560" class="relationship-text">1:1</text>
+                        <text x="500" y="545" class="relationship-text">has review</text>
+
+                        <!-- Payments to Receipts -->
+                        <line x1="230" y1="580" x2="780" y2="500" class="relationship-line" />
+                        <text x="505" y="540" class="relationship-text">1:1</text>
+                        <text x="490" y="525" class="relationship-text">generates</text>
+
+                        <!-- Bookings to Receipts -->
+                        <line x1="480" y1="580" x2="780" y2="500" class="relationship-line" />
+                        <text x="630" y="540" class="relationship-text">1:N</text>
+                        <text x="615" y="525" class="relationship-text">has receipts</text>
+                    </svg>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card zoom-on-hover">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Entities</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card zoom-on-hover">
+                        <div class="stat-number">6</div>
+                        <div class="stat-label">Relationships</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 85%"></div>
+                        </div>
+                    </div>
+                    <div class="stat-card zoom-on-hover">
+                        <div class="stat-number">42</div>
+                        <div class="stat-label">Attributes</div>
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 90%"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <h4>📝 Entity Descriptions & Updated Schema</h4>
+                    <div class="rule-item">
+                        <h4>👤 Users</h4>
+                        <p>เก็บข้อมูลผู้ใช้งานระบบ รวมถึงข้อมูลส่วนตัว การลงทะเบียน และการยืนยันตัวตน<br>
+                            <strong>New fields:</strong> email_verified, last_login_at, password_hash (แทน password)
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>🏨 Hotels</h4>
+                        <p>ข้อมูลโรงแรม ตำแหน่งที่ตั้ง คะแนนรีวิว และรายละเอียดต่างๆ ของโรงแรม<br>
+                            <strong>New fields:</strong> amenities, latitude, longitude
+                            สำหรับแผนที่และสิ่งอำนวยความสะดวก
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>🛏️ Rooms</h4>
+                        <p>ข้อมูลห้องพักในแต่ละโรงแรม ประเภทห้อง ราคา และสิ่งอำนวยความสะดวก<br>
+                            <strong>New fields:</strong> size_sqm, floor_number สำหรับข้อมูลเพิ่มเติม
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>📋 Bookings</h4>
+                        <p>การจองห้องพัก วันที่เข้า-ออก จำนวนผู้เข้าพัก และสถานะการจอง<br>
+                            <strong>New fields:</strong> payment_status, confirmation_code, updated_at สำหรับการติดตาม
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>💳 Payments</h4>
+                        <p>ข้อมูลการชำระเงิน วิธีการชำระ สถานะการชำระ และหลักฐานการทำธุรกรรม<br>
+                            <strong>New fields:</strong> currency, gateway_response (JSON) สำหรับการบูรณาการ payment
+                            gateway
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>⭐ Reviews</h4>
+                        <p>รีวิวและคะแนนของผู้ใช้งานต่อโรงแรม รวมถึงความคิดเห็นและการยืนยัน<br>
+                            <strong>New fields:</strong> booking_id (FK), category_ratings (JSON), status
+                            สำหรับการจัดการรีวิว
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>🧾 Receipts (New Entity)</h4>
+                        <p>ใบเสร็จรับเงินสำหรับการชำระเงิน พร้อมการจัดเก็บไฟล์และ URL สำหรับดาวน์โหลด<br>
+                            <strong>Purpose:</strong> จัดการใบเสร็จและการดาวน์โหลดเอกสารสำคัญ
+                        </p>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <h4>🔗 Updated Relationship Mapping</h4>
+                    <div class="responsive-table">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Relationship</th>
+                                    <th>From Entity</th>
+                                    <th>To Entity</th>
+                                    <th>Cardinality</th>
+                                    <th>Foreign Key</th>
+                                    <th>Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>makes</strong></td>
+                                    <td>👤 Users</td>
+                                    <td>📋 Bookings</td>
+                                    <td>1:N</td>
+                                    <td>user_id</td>
+                                    <td>ผู้ใช้หนึ่งคนสามารถจองได้หลายครั้ง</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>has</strong></td>
+                                    <td>🏨 Hotels</td>
+                                    <td>🛏️ Rooms</td>
+                                    <td>1:N</td>
+                                    <td>hotel_id</td>
+                                    <td>โรงแรมหนึ่งแห่งมีห้องพักหลายห้อง</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>booked in</strong></td>
+                                    <td>🛏️ Rooms</td>
+                                    <td>📋 Bookings</td>
+                                    <td>1:N</td>
+                                    <td>room_id</td>
+                                    <td>ห้องหนึ่งห้องสามารถถูกจองได้หลายครั้ง</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>has</strong></td>
+                                    <td>📋 Bookings</td>
+                                    <td>💳 Payments</td>
+                                    <td>1:N</td>
+                                    <td>booking_id</td>
+                                    <td>การจองหนึ่งครั้งอาจมีการชำระเงินหลายครั้ง</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>writes</strong></td>
+                                    <td>👤 Users</td>
+                                    <td>⭐ Reviews</td>
+                                    <td>1:N</td>
+                                    <td>user_id</td>
+                                    <td>ผู้ใช้หนึ่งคนสามารถเขียนรีวิวได้หลายรีวิว</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>receives</strong></td>
+                                    <td>🏨 Hotels</td>
+                                    <td>⭐ Reviews</td>
+                                    <td>1:N</td>
+                                    <td>hotel_id</td>
+                                    <td>โรงแรมหนึ่งแห่งสามารถรับรีวิวได้หลายรีวิว</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>has review</strong></td>
+                                    <td>📋 Bookings</td>
+                                    <td>⭐ Reviews</td>
+                                    <td>1:1</td>
+                                    <td>booking_id</td>
+                                    <td>การจองหนึ่งครั้งสามารถมีรีวิวได้หนึ่งรีวิว</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>generates</strong></td>
+                                    <td>💳 Payments</td>
+                                    <td>🧾 Receipts</td>
+                                    <td>1:1</td>
+                                    <td>payment_id</td>
+                                    <td>การชำระเงินหนึ่งครั้งสร้างใบเสร็จหนึ่งใบ</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>has receipts</strong></td>
+                                    <td>📋 Bookings</td>
+                                    <td>🧾 Receipts</td>
+                                    <td>1:N</td>
+                                    <td>booking_id</td>
+                                    <td>การจองหนึ่งครั้งสามารถมีใบเสร็จได้หลายใบ</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="legend">
+                    <h4>🔄 API-Database Field Mapping</h4>
+                    <div class="responsive-table">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th>Entity</th>
+                                    <th>API Field (camelCase)</th>
+                                    <th>Database Field (snake_case)</th>
+                                    <th>Data Type</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Users</strong></td>
+                                    <td>firstName</td>
+                                    <td>first_name</td>
+                                    <td>VARCHAR(50)</td>
+                                    <td>API convention: camelCase</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Users</strong></td>
+                                    <td>lastName</td>
+                                    <td>last_name</td>
+                                    <td>VARCHAR(50)</td>
+                                    <td>API convention: camelCase</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Users</strong></td>
+                                    <td>emailVerified</td>
+                                    <td>email_verified</td>
+                                    <td>BOOLEAN</td>
+                                    <td>Email verification status</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Hotels</strong></td>
+                                    <td>location.latitude</td>
+                                    <td>latitude</td>
+                                    <td>DECIMAL(10,8)</td>
+                                    <td>Nested in API response</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Hotels</strong></td>
+                                    <td>location.longitude</td>
+                                    <td>longitude</td>
+                                    <td>DECIMAL(11,8)</td>
+                                    <td>Nested in API response</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Bookings</strong></td>
+                                    <td>checkInDate</td>
+                                    <td>check_in_date</td>
+                                    <td>DATE</td>
+                                    <td>Date format: YYYY-MM-DD</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Bookings</strong></td>
+                                    <td>checkOutDate</td>
+                                    <td>check_out_date</td>
+                                    <td>DATE</td>
+                                    <td>Date format: YYYY-MM-DD</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Reviews</strong></td>
+                                    <td>categories</td>
+                                    <td>category_ratings</td>
+                                    <td>JSON</td>
+                                    <td>Structured rating data</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Payments</strong></td>
+                                    <td>gatewayResponse</td>
+                                    <td>gateway_response</td>
+                                    <td>JSON</td>
+                                    <td>Payment gateway metadata</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Booking Process Tab -->
+        <div id="booking-flow" class="tab-content">
+            <div class="diagram-container">
+                <h2 class="diagram-title">Booking Process Flowchart</h2>
+                <div class="diagram-description">
+                    <h3>🔄 Booking Process Flow</h3>
+                    <p>แผนผังแสดงขั้นตอนการจองห้องพักตั้งแต่การค้นหาโรงแรมจนถึงการยืนยันการจอง</p>
+                </div>
+
+                <div class="loading" id="booking-loading">
+                    <div class="loading-spinner"></div>
+                    <p>กำลังโหลด Booking Flowchart...</p>
+                </div>
+
+                <div class="svg-container" id="booking-svg-container" style="display: none;">
+                    <svg width="800" height="1000" viewBox="0 0 800 1000">
+                        <defs>
+                            <marker id="arrowhead2" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+                                <polygon points="0 0, 10 3.5, 0 7" fill="#64748b" />
+                            </marker>
+                        </defs>
+
+                        <!-- Start -->
+                        <circle cx="400" cy="50" r="30" class="start-end-circle zoom-on-hover" />
+                        <text x="400" y="55" class="flow-text">START</text>
+
+                        <!-- User searches hotels -->
+                        <rect x="320" y="100" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="400" y="125" class="flow-text">🔍 User searches</text>
+                        <text x="400" y="145" class="flow-text">for hotels</text>
+
+                        <!-- Display search results -->
+                        <rect x="320" y="200" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="400" y="225" class="flow-text">📋 Display search</text>
+                        <text x="400" y="245" class="flow-text">results</text>
+
+                        <!-- User selects hotel -->
+                        <rect x="320" y="300" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="400" y="325" class="flow-text">🏨 User selects</text>
+                        <text x="400" y="345" class="flow-text">hotel & room</text>
+
+                        <!-- Check availability -->
+                        <polygon points="400,400 450,440 400,480 350,440" class="decision-diamond zoom-on-hover" />
+                        <text x="400" y="435" class="flow-text">🗓️ Room</text>
+                        <text x="400" y="450" class="flow-text">available?</text>
+
+                        <!-- Room not available -->
+                        <rect x="550" y="410" width="140" height="60" class="process-box zoom-on-hover" />
+                        <text x="620" y="435" class="flow-text">❌ Show "Room</text>
+                        <text x="620" y="455" class="flow-text">not available"</text>
+
+                        <!-- User login check -->
+                        <polygon points="400,520 450,560 400,600 350,560" class="decision-diamond zoom-on-hover" />
+                        <text x="400" y="555" class="flow-text">👤 User</text>
+                        <text x="400" y="570" class="flow-text">logged in?</text>
+
+                        <!-- Login/Register -->
+                        <rect x="150" y="530" width="140" height="60" class="process-box zoom-on-hover" />
+                        <text x="220" y="555" class="flow-text">🔐 Login/Register</text>
+                        <text x="220" y="575" class="flow-text">process</text>
+
+                        <!-- Enter booking details -->
+                        <rect x="320" y="640" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="400" y="665" class="flow-text">📝 Enter booking</text>
+                        <text x="400" y="685" class="flow-text">details</text>
+
+                        <!-- Review booking -->
+                        <rect x="320" y="740" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="400" y="765" class="flow-text">👀 Review booking</text>
+                        <text x="400" y="785" class="flow-text">& pricing</text>
+
+                        <!-- Proceed to payment -->
+                        <rect x="320" y="840" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="400" y="865" class="flow-text">💳 Proceed to</text>
+                        <text x="400" y="885" class="flow-text">payment</text>
+
+                        <!-- End -->
+                        <circle cx="400" cy="950" r="30" class="start-end-circle zoom-on-hover" />
+                        <text x="400" y="955" class="flow-text">END</text>
+
+                        <!-- Flow lines -->
+                        <line x1="400" y1="80" x2="400" y2="100" class="flow-line" />
+                        <line x1="400" y1="160" x2="400" y2="200" class="flow-line" />
+                        <line x1="400" y1="260" x2="400" y2="300" class="flow-line" />
+                        <line x1="400" y1="360" x2="400" y2="400" class="flow-line" />
+
+                        <!-- No availability branch -->
+                        <line x1="450" y1="440" x2="550" y2="440" class="flow-line" />
+                        <text x="500" y="435" class="flow-text">No</text>
+                        <line x1="620" y1="410" x2="620" y2="340" class="flow-line" />
+                        <line x1="620" y1="340" x2="480" y2="340" class="flow-line" />
+
+                        <!-- Available branch -->
+                        <line x1="400" y1="480" x2="400" y2="520" class="flow-line" />
+                        <text x="410" y="500" class="flow-text">Yes</text>
+
+                        <!-- Not logged in branch -->
+                        <line x1="350" y1="560" x2="290" y2="560" class="flow-line" />
+                        <text x="320" y="555" class="flow-text">No</text>
+                        <line x1="220" y1="530" x2="220" y2="680" class="flow-line" />
+                        <line x1="220" y1="680" x2="320" y2="680" class="flow-line" />
+
+                        <!-- Logged in branch -->
+                        <line x1="400" y1="600" x2="400" y2="640" class="flow-line" />
+                        <text x="410" y="620" class="flow-text">Yes</text>
+
+                        <line x1="400" y1="700" x2="400" y2="740" class="flow-line" />
+                        <line x1="400" y1="800" x2="400" y2="840" class="flow-line" />
+                        <line x1="400" y1="900" x2="400" y2="920" class="flow-line" />
+                    </svg>
+                </div>
+
+                <div class="legend">
+                    <h4>🔍 Process Steps</h4>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #dcfce7; border-color: #16a34a;"></div>
+                        <span>Start/End Points</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #ffffff; border-color: #06b6d4;"></div>
+                        <span>Process Steps</span>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color" style="background: #fef3c7; border-color: #f59e0b;"></div>
+                        <span>Decision Points</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Process Tab -->
+        <div id="payment-flow" class="tab-content">
+            <div class="diagram-container">
+                <h2 class="diagram-title">Payment Process Flowchart</h2>
+                <div class="diagram-description">
+                    <h3>💳 Payment Processing Flow</h3>
+                    <p>แผนผังแสดงขั้นตอนการชำระเงิน ตั้งแต่การเลือกวิธีการชำระจนถึงการยืนยันการจอง</p>
+                </div>
+
+                <div class="loading" id="payment-loading">
+                    <div class="loading-spinner"></div>
+                    <p>กำลังโหลด Payment Flowchart...</p>
+                </div>
+
+                <div class="svg-container" id="payment-svg-container" style="display: none;">
+                    <svg width="900" height="1000" viewBox="0 0 900 1000">
+                        <!-- Start -->
+                        <circle cx="450" cy="50" r="30" class="start-end-circle zoom-on-hover" />
+                        <text x="450" y="55" class="flow-text">START</text>
+
+                        <!-- Select payment method -->
+                        <rect x="370" y="100" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="450" y="125" class="flow-text">💳 Select payment</text>
+                        <text x="450" y="145" class="flow-text">method</text>
+
+                        <!-- Payment method decision -->
+                        <polygon points="450,200 520,240 450,280 380,240" class="decision-diamond zoom-on-hover" />
+                        <text x="450" y="235" class="flow-text">Payment</text>
+                        <text x="450" y="250" class="flow-text">method?</text>
+
+                        <!-- Credit Card -->
+                        <rect x="200" y="340" width="140" height="60" class="process-box zoom-on-hover" />
+                        <text x="270" y="365" class="flow-text">💳 Credit Card</text>
+                        <text x="270" y="385" class="flow-text">Details</text>
+
+                        <!-- Bank Transfer -->
+                        <rect x="370" y="340" width="140" height="60" class="process-box zoom-on-hover" />
+                        <text x="440" y="365" class="flow-text">🏦 Bank Transfer</text>
+                        <text x="440" y="385" class="flow-text">Details</text>
+
+                        <!-- Digital Wallet -->
+                        <rect x="540" y="340" width="140" height="60" class="process-box zoom-on-hover" />
+                        <text x="610" y="365" class="flow-text">📱 Digital Wallet</text>
+                        <text x="610" y="385" class="flow-text">Login</text>
+
+                        <!-- Validate payment info -->
+                        <rect x="370" y="450" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="450" y="475" class="flow-text">✅ Validate payment</text>
+                        <text x="450" y="495" class="flow-text">information</text>
+
+                        <!-- Validation result -->
+                        <polygon points="450,540 500,580 450,620 400,580" class="decision-diamond zoom-on-hover" />
+                        <text x="450" y="575" class="flow-text">Valid?</text>
+
+                        <!-- Invalid payment -->
+                        <rect x="600" y="550" width="140" height="60" class="process-box zoom-on-hover" />
+                        <text x="670" y="575" class="flow-text">❌ Show error</text>
+                        <text x="670" y="595" class="flow-text">message</text>
+
+                        <!-- Process payment -->
+                        <rect x="370" y="660" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="450" y="685" class="flow-text">🔄 Process payment</text>
+                        <text x="450" y="705" class="flow-text">with gateway</text>
+
+                        <!-- Payment result -->
+                        <polygon points="450,760 500,800 450,840 400,800" class="decision-diamond zoom-on-hover" />
+                        <text x="450" y="795" class="flow-text">Payment</text>
+                        <text x="450" y="810" class="flow-text">success?</text>
+
+                        <!-- Payment failed -->
+                        <rect x="200" y="770" width="140" height="60" class="process-box zoom-on-hover" />
+                        <text x="270" y="795" class="flow-text">❌ Payment failed</text>
+                        <text x="270" y="815" class="flow-text">Try again</text>
+
+                        <!-- Confirm booking -->
+                        <rect x="370" y="880" width="160" height="60" class="process-box zoom-on-hover" />
+                        <text x="450" y="905" class="flow-text">✅ Confirm booking</text>
+                        <text x="450" y="925" class="flow-text">& send email</text>
+
+                        <!-- End -->
+                        <circle cx="450" cy="980" r="30" class="start-end-circle zoom-on-hover" />
+                        <text x="450" y="985" class="flow-text">END</text>
+
+                        <!-- Flow lines -->
+                        <line x1="450" y1="80" x2="450" y2="100" class="flow-line" />
+                        <line x1="450" y1="160" x2="450" y2="200" class="flow-line" />
+
+                        <!-- Payment method branches -->
+                        <line x1="410" y1="240" x2="270" y2="340" class="flow-line" />
+                        <text x="340" y="290" class="flow-text">Credit Card</text>
+
+                        <line x1="450" y1="280" x2="440" y2="340" class="flow-line" />
+                        <text x="445" y="310" class="flow-text">Bank</text>
+
+                        <line x1="490" y1="240" x2="610" y2="340" class="flow-line" />
+                        <text x="550" y="290" class="flow-text">E-Wallet</text>
+
+                        <!-- Converge to validation -->
+                        <line x1="270" y1="400" x2="440" y2="450" class="flow-line" />
+                        <line x1="440" y1="400" x2="450" y2="450" class="flow-line" />
+                        <line x1="610" y1="400" x2="460" y2="450" class="flow-line" />
+
+                        <line x1="450" y1="510" x2="450" y2="540" class="flow-line" />
+
+                        <!-- Invalid branch -->
+                        <line x1="500" y1="580" x2="600" y2="580" class="flow-line" />
+                        <text x="550" y="575" class="flow-text">No</text>
+                        <line x1="670" y1="550" x2="670" y2="130" class="flow-line" />
+                        <line x1="670" y1="130" x2="530" y2="130" class="flow-line" />
+
+                        <!-- Valid branch -->
+                        <line x1="450" y1="620" x2="450" y2="660" class="flow-line" />
+                        <text x="460" y="640" class="flow-text">Yes</text>
+
+                        <line x1="450" y1="720" x2="450" y2="760" class="flow-line" />
+
+                        <!-- Payment failed branch -->
+                        <line x1="400" y1="800" x2="340" y2="800" class="flow-line" />
+                        <text x="370" y="795" class="flow-text">No</text>
+                        <line x1="270" y1="770" x2="270" y2="130" class="flow-line" />
+                        <line x1="270" y1="130" x2="370" y2="130" class="flow-line" />
+
+                        <!-- Payment success branch -->
+                        <line x1="450" y1="840" x2="450" y2="880" class="flow-line" />
+                        <text x="460" y="860" class="flow-text">Yes</text>
+
+                        <line x1="450" y1="940" x2="450" y2="950" class="flow-line" />
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- User Journey Tab -->
+        <div id="user-journey" class="tab-content">
+            <div class="diagram-container">
+                <h2 class="diagram-title">User Journey Map</h2>
+                <div class="diagram-description">
+                    <h3>🗺️ Complete User Journey</h3>
+                    <p>แผนที่แสดงการเดินทางของผู้ใช้งานตั้งแต่การเข้าเว็บไซต์จนถึงการเดินทางและรีวิว</p>
+                </div>
+
+                <div class="responsive-table">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Stage</th>
+                                <th>Touchpoint</th>
+                                <th>User Actions</th>
+                                <th>Emotions</th>
+                                <th>Pain Points</th>
+                                <th>Opportunities</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>🔍 Discovery</strong></td>
+                                <td>Landing Page</td>
+                                <td>• เข้าเว็บไซต์<br>• ดูข้อมูลโรงแรม<br>• เปรียบเทียบราคา</td>
+                                <td>😊 Excited<br>🤔 Curious</td>
+                                <td>• ข้อมูลไม่ครบ<br>• โหลดช้า</td>
+                                <td>• ปรับปรุง UX<br>• เพิ่มรีวิว</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🔍 Search</strong></td>
+                                <td>Search Results</td>
+                                <td>• ค้นหาโรงแรม<br>• กรองผลลัพธ์<br>• เรียงลำดับ</td>
+                                <td>🤔 Evaluating<br>😐 Neutral</td>
+                                <td>• ผลลัพธ์มากเกินไป<br>• ตัวกรองซับซ้อน</td>
+                                <td>• Smart filters<br>• AI recommendations</td>
+                            </tr>
+                            <tr>
+                                <td><strong>📱 Booking</strong></td>
+                                <td>Booking Form</td>
+                                <td>• เลือกห้อง<br>• กรอกข้อมูล<br>• ตรวจสอบการจอง</td>
+                                <td>😊 Confident<br>😰 Anxious</td>
+                                <td>• ฟอร์มยาว<br>• ข้อมูลไม่ชัดเจน</td>
+                                <td>• Simplify form<br>• Progress indicator</td>
+                            </tr>
+                            <tr>
+                                <td><strong>💳 Payment</strong></td>
+                                <td>Payment Gateway</td>
+                                <td>• เลือกวิธีชำระ<br>• กรอกข้อมูลการเงิน<br>• ยืนยันการชำระ</td>
+                                <td>😰 Worried<br>🤞 Hopeful</td>
+                                <td>• ความปลอดภัย<br>• Process ช้า</td>
+                                <td>• Security badges<br>• Multiple payment options</td>
+                            </tr>
+                            <tr>
+                                <td><strong>✅ Confirmation</strong></td>
+                                <td>Email & Dashboard</td>
+                                <td>• รับอีเมลยืนยัน<br>• เช็ครายละเอียด<br>• บันทึกการจอง</td>
+                                <td>😊 Relieved<br>🎉 Happy</td>
+                                <td>• อีเมลล่าช้า<br>• ข้อมูลไม่ครบ</td>
+                                <td>• Instant confirmation<br>• Rich content email</td>
+                            </tr>
+                            <tr>
+                                <td><strong>🏨 Stay</strong></td>
+                                <td>Hotel Experience</td>
+                                <td>• เช็คอิน<br>• ใช้บริการ<br>• เช็คเอาท์</td>
+                                <td>😊 Satisfied<br>😍 Delighted</td>
+                                <td>• ห้องไม่ตรงคาด<br>• บริการไม่ดี</td>
+                                <td>• Quality assurance<br>• Real-time support</td>
+                            </tr>
+                            <tr>
+                                <td><strong>⭐ Review</strong></td>
+                                <td>Review System</td>
+                                <td>• เขียนรีวิว<br>• ให้คะแนน<br>• แชร์ประสบการณ์</td>
+                                <td>🤔 Reflective<br>😊 Sharing</td>
+                                <td>• ฟอร์มรีวิวซับซ้อน<br>• ไม่มี incentive</td>
+                                <td>• Gamification<br>• Photo upload</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="rule-category">
+                    <h3>📊 Key Metrics & KPIs</h3>
+                    <div class="rule-item">
+                        <h4>Conversion Rate</h4>
+                        <p>• Search to booking: 15-25%<br>• Cart abandonment: <30%<br>• Payment completion: >95%</p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>User Experience</h4>
+                        <p>• Page load time: <3 seconds<br>• Mobile usability: 100%<br>• Customer satisfaction: >4.5/5
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>Engagement</h4>
+                        <p>• Return visitors: >40%<br>• Review rate: >60%<br>• Support tickets: <5%< /p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- System Architecture Tab -->
+        <div id="architecture" class="tab-content">
+            <div class="diagram-container">
+                <h2 class="diagram-title">System Architecture</h2>
+                <div class="diagram-description">
+                    <h3>🏗️ Hotel Booking System Architecture</h3>
+                    <p>สถาปัตยกรรมระบบแสดงการเชื่อมต่อระหว่าง Frontend, Backend, Database และ External Services</p>
+                </div>
+
+                <div class="loading" id="arch-loading">
+                    <div class="loading-spinner"></div>
+                    <p>กำลังโหลด Architecture Diagram...</p>
+                </div>
+
+                <div class="svg-container" id="arch-svg-container" style="display: none;">
+                    <svg width="1000" height="700" viewBox="0 0 1000 700">
+                        <!-- Frontend Layer -->
+                        <rect x="50" y="50" width="900" height="120" rx="10" fill="#e0f2fe" stroke="#0284c7"
+                            stroke-width="2" class="zoom-on-hover" />
+                        <text x="500" y="80" class="entity-title" style="font-size: 16px;">🌐 Frontend Layer</text>
+
+                        <rect x="80" y="100" width="120" height="50" rx="5" fill="#ffffff" stroke="#0284c7"
+                            class="zoom-on-hover" />
+                        <text x="140" y="130" class="flow-text">Next.js App</text>
+
+                        <rect x="220" y="100" width="120" height="50" rx="5" fill="#ffffff" stroke="#0284c7"
+                            class="zoom-on-hover" />
+                        <text x="280" y="130" class="flow-text">React Components</text>
+
+                        <rect x="360" y="100" width="120" height="50" rx="5" fill="#ffffff" stroke="#0284c7"
+                            class="zoom-on-hover" />
+                        <text x="420" y="130" class="flow-text">shadcn/ui</text>
+
+                        <rect x="500" y="100" width="120" height="50" rx="5" fill="#ffffff" stroke="#0284c7"
+                            class="zoom-on-hover" />
+                        <text x="560" y="130" class="flow-text">State Management</text>
+
+                        <rect x="640" y="100" width="120" height="50" rx="5" fill="#ffffff" stroke="#0284c7"
+                            class="zoom-on-hover" />
+                        <text x="700" y="130" class="flow-text">PWA</text>
+
+                        <rect x="780" y="100" width="120" height="50" rx="5" fill="#ffffff" stroke="#0284c7"
+                            class="zoom-on-hover" />
+                        <text x="840" y="130" class="flow-text">Mobile App</text>
+
+                        <!-- API Gateway -->
+                        <rect x="350" y="200" width="300" height="60" rx="10" fill="#fef3c7" stroke="#f59e0b"
+                            stroke-width="2" class="zoom-on-hover" />
+                        <text x="500" y="235" class="entity-title">🚪 API Gateway / Load Balancer</text>
+
+                        <!-- Backend Services -->
+                        <rect x="50" y="300" width="900" height="140" rx="10" fill="#dcfce7" stroke="#16a34a"
+                            stroke-width="2" class="zoom-on-hover" />
+                        <text x="500" y="330" class="entity-title" style="font-size: 16px;">⚙️ Backend Services
+                            (Microservices)</text>
+
+                        <rect x="80" y="350" width="100" height="70" rx="5" fill="#ffffff" stroke="#16a34a"
+                            class="zoom-on-hover" />
+                        <text x="130" y="375" class="flow-text">User Service</text>
+                        <text x="130" y="395" class="flow-text">Authentication</text>
+
+                        <rect x="200" y="350" width="100" height="70" rx="5" fill="#ffffff" stroke="#16a34a"
+                            class="zoom-on-hover" />
+                        <text x="250" y="375" class="flow-text">Hotel Service</text>
+                        <text x="250" y="395" class="flow-text">Search & Filter</text>
+
+                        <rect x="320" y="350" width="100" height="70" rx="5" fill="#ffffff" stroke="#16a34a"
+                            class="zoom-on-hover" />
+                        <text x="370" y="375" class="flow-text">Booking Service</text>
+                        <text x="370" y="395" class="flow-text">Reservations</text>
+
+                        <rect x="440" y="350" width="100" height="70" rx="5" fill="#ffffff" stroke="#16a34a"
+                            class="zoom-on-hover" />
+                        <text x="490" y="375" class="flow-text">Payment Service</text>
+                        <text x="490" y="395" class="flow-text">Transactions</text>
+
+                        <rect x="560" y="350" width="100" height="70" rx="5" fill="#ffffff" stroke="#16a34a"
+                            class="zoom-on-hover" />
+                        <text x="610" y="375" class="flow-text">Notification</text>
+                        <text x="610" y="395" class="flow-text">Service</text>
+
+                        <rect x="680" y="350" width="100" height="70" rx="5" fill="#ffffff" stroke="#16a34a"
+                            class="zoom-on-hover" />
+                        <text x="730" y="375" class="flow-text">Review Service</text>
+                        <text x="730" y="395" class="flow-text">Ratings</text>
+
+                        <rect x="800" y="350" width="120" height="70" rx="5" fill="#ffffff" stroke="#16a34a"
+                            class="zoom-on-hover" />
+                        <text x="860" y="375" class="flow-text">Analytics Service</text>
+                        <text x="860" y="395" class="flow-text">Reporting</text>
+
+                        <!-- Database Layer -->
+                        <rect x="50" y="480" width="600" height="100" rx="10" fill="#fce7f3" stroke="#ec4899"
+                            stroke-width="2" class="zoom-on-hover" />
+                        <text x="350" y="510" class="entity-title" style="font-size: 16px;">🗄️ Database Layer</text>
+
+                        <rect x="80" y="530" width="120" height="40" rx="5" fill="#ffffff" stroke="#ec4899"
+                            class="zoom-on-hover" />
+                        <text x="140" y="555" class="flow-text">PostgreSQL</text>
+
+                        <rect x="220" y="530" width="120" height="40" rx="5" fill="#ffffff" stroke="#ec4899"
+                            class="zoom-on-hover" />
+                        <text x="280" y="555" class="flow-text">Redis Cache</text>
+
+                        <rect x="360" y="530" width="120" height="40" rx="5" fill="#ffffff" stroke="#ec4899"
+                            class="zoom-on-hover" />
+                        <text x="420" y="555" class="flow-text">Elasticsearch</text>
+
+                        <rect x="500" y="530" width="120" height="40" rx="5" fill="#ffffff" stroke="#ec4899"
+                            class="zoom-on-hover" />
+                        <text x="560" y="555" class="flow-text">File Storage</text>
+
+                        <!-- External Services -->
+                        <rect x="700" y="480" width="250" height="160" rx="10" fill="#f3e8ff" stroke="#8b5cf6"
+                            stroke-width="2" class="zoom-on-hover" />
+                        <text x="825" y="510" class="entity-title" style="font-size: 14px;">🔌 External Services</text>
+
+                        <rect x="720" y="530" width="100" height="25" rx="3" fill="#ffffff" stroke="#8b5cf6"
+                            class="zoom-on-hover" />
+                        <text x="770" y="547" class="flow-text" style="font-size: 10px;">Payment Gateway</text>
+
+                        <rect x="720" y="565" width="100" height="25" rx="3" fill="#ffffff" stroke="#8b5cf6"
+                            class="zoom-on-hover" />
+                        <text x="770" y="582" class="flow-text" style="font-size: 10px;">Email Service</text>
+
+                        <rect x="720" y="600" width="100" height="25" rx="3" fill="#ffffff" stroke="#8b5cf6"
+                            class="zoom-on-hover" />
+                        <text x="770" y="617" class="flow-text" style="font-size: 10px;">SMS Service</text>
+
+                        <rect x="830" y="530" width="100" height="25" rx="3" fill="#ffffff" stroke="#8b5cf6"
+                            class="zoom-on-hover" />
+                        <text x="880" y="547" class="flow-text" style="font-size: 10px;">Maps API</text>
+
+                        <rect x="830" y="565" width="100" height="25" rx="3" fill="#ffffff" stroke="#8b5cf6"
+                            class="zoom-on-hover" />
+                        <text x="880" y="582" class="flow-text" style="font-size: 10px;">CDN</text>
+
+                        <rect x="830" y="600" width="100" height="25" rx="3" fill="#ffffff" stroke="#8b5cf6"
+                            class="zoom-on-hover" />
+                        <text x="880" y="617" class="flow-text" style="font-size: 10px;">Analytics</text>
+
+                        <!-- Connection Lines -->
+                        <line x1="500" y1="170" x2="500" y2="200" stroke="#64748b" stroke-width="2" />
+                        <line x1="500" y1="260" x2="500" y2="300" stroke="#64748b" stroke-width="2" />
+                        <line x1="350" y1="440" x2="350" y2="480" stroke="#64748b" stroke-width="2" />
+                        <line x1="700" y1="400" x2="700" y2="530" stroke="#64748b" stroke-width="2" />
+                    </svg>
+                </div>
+
+                <div class="rule-category">
+                    <h3>🔧 Technology Stack</h3>
+                    <div class="rule-item">
+                        <h4>Frontend</h4>
+                        <p><strong>Framework:</strong> Next.js 14+ with App Router<br>
+                            <strong>UI Library:</strong> React 18+ with TypeScript<br>
+                            <strong>Component Library:</strong> shadcn/ui + Tailwind CSS<br>
+                            <strong>State Management:</strong> Zustand / Redux Toolkit<br>
+                            <strong>Animation:</strong> Framer Motion / CSS Animations
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>Backend</h4>
+                        <p><strong>Runtime:</strong> Node.js / Bun<br>
+                            <strong>API:</strong> Next.js API Routes / Express.js<br>
+                            <strong>Authentication:</strong> NextAuth.js / Auth0<br>
+                            <strong>Validation:</strong> Zod / Joi<br>
+                            <strong>ORM:</strong> Prisma / TypeORM
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>Database & Storage</h4>
+                        <p><strong>Primary DB:</strong> PostgreSQL<br>
+                            <strong>Cache:</strong> Redis<br>
+                            <strong>Search:</strong> Elasticsearch<br>
+                            <strong>File Storage:</strong> AWS S3 / Cloudinary<br>
+                            <strong>CDN:</strong> Cloudflare / AWS CloudFront
+                        </p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>DevOps & Monitoring</h4>
+                        <p><strong>Deployment:</strong> Vercel / Docker + Kubernetes<br>
+                            <strong>CI/CD:</strong> GitHub Actions<br>
+                            <strong>Monitoring:</strong> Datadog / New Relic<br>
+                            <strong>Error Tracking:</strong> Sentry<br>
+                            <strong>Analytics:</strong> Google Analytics / Mixpanel
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- API Documentation Tab -->
+        <div id="api-docs" class="tab-content">
+            <div class="api-section">
+                <h2 class="diagram-title">API Documentation</h2>
+                <div class="diagram-description">
+                    <h3>📡 RESTful API Endpoints</h3>
+                    <p>เอกสาร API สำหรับระบบจองโรงแรมออนไลน์ พร้อมตัวอย่างการใช้งาน</p>
+                </div>
+
+                <!-- Authentication APIs -->
+                <div class="api-endpoint">
+                    <div class="api-header">
+                        <span>👤 Authentication APIs</span>
+                    </div>
+                    <div class="api-body">
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>POST /api/auth/register</span>
+                                <span class="api-method">POST</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">สมัครสมาชิกใหม่</p>
+                                <div class="api-params">
+                                    <h4>Request Body:</h4>
+                                    <pre
+                                        style="background: #f1f5f9; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "email": "john.doe@example.com",
+  "password": "securePassword123",
+  "firstName": "John",
+  "lastName": "Doe",
+  "phone": "+66812345678"
+}</pre>
+                                </div>
+                                <div class="api-params">
+                                    <h4>Response (201 Created):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "message": "User registered successfully",
+  "data": {
+    "user": {
+      "user_id": "usr_1234567890",
+      "email": "john.doe@example.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "phone": "+66812345678",
+      "created_at": "2024-01-15T08:30:00Z",
+      "email_verified": false
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Insert new user into database
+INSERT INTO users (
+    user_id, 
+    email, 
+    password_hash, 
+    first_name, 
+    last_name, 
+    phone, 
+    created_at,
+    email_verified
+) VALUES (
+    'usr_1234567890',
+    'john.doe@example.com',
+    '$2a$12$LQv3c1yqBWVHxkd0LHAkCOYz6TtxMQJqhN8/LewLyTwFhTOV7iZmy', -- bcrypt hash
+    'John',
+    'Doe',
+    '+66812345678',
+    NOW(),
+    FALSE
+);
+
+-- Check if email already exists (validation)
+SELECT COUNT(*) FROM users WHERE email = 'john.doe@example.com';</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>POST /api/auth/login</span>
+                                <span class="api-method">POST</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">เข้าสู่ระบบ</p>
+                                <div class="api-params">
+                                    <h4>Request Body:</h4>
+                                    <pre
+                                        style="background: #f1f5f9; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "email": "john.doe@example.com",
+  "password": "securePassword123"
+}</pre>
+                                </div>
+                                <div class="api-params">
+                                    <h4>Response (200 OK):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "user": {
+      "user_id": "usr_1234567890",
+      "email": "john.doe@example.com",
+      "firstName": "John",
+      "lastName": "Doe",
+      "email_verified": true
+    },
+    "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "expires_in": 3600
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Authenticate user login
+SELECT 
+    user_id,
+    email,
+    password_hash,
+    first_name,
+    last_name,
+    email_verified,
+    created_at
+FROM users 
+WHERE email = 'john.doe@example.com' 
+  AND deleted_at IS NULL;
+
+-- Update last login timestamp
+UPDATE users 
+SET last_login_at = NOW() 
+WHERE user_id = 'usr_1234567890';</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hotel APIs -->
+                <div class="api-endpoint">
+                    <div class="api-header">
+                        <span>🏨 Hotel APIs</span>
+                    </div>
+                    <div class="api-body">
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>GET /api/hotels</span>
+                                <span class="api-method">GET</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">ดึงรายการโรงแรมทั้งหมด</p>
+                                <div class="api-params">
+                                    <h4>Query Parameters:</h4>
+                                    <div class="param-item">
+                                        <span class="param-name">city</span>
+                                        <span class="param-type">string</span>
+                                        <p class="param-desc">กรองตามเมือง (optional)</p>
+                                    </div>
+                                    <div class="param-item">
+                                        <span class="param-name">checkIn</span>
+                                        <span class="param-type">date</span>
+                                        <p class="param-desc">วันที่เช็คอิน (YYYY-MM-DD)</p>
+                                    </div>
+                                    <div class="param-item">
+                                        <span class="param-name">checkOut</span>
+                                        <span class="param-type">date</span>
+                                        <p class="param-desc">วันที่เช็คเอาท์ (YYYY-MM-DD)</p>
+                                    </div>
+                                    <div class="param-item">
+                                        <span class="param-name">guests</span>
+                                        <span class="param-type">number</span>
+                                        <p class="param-desc">จำนวนผู้เข้าพัก (default: 1)</p>
+                                    </div>
+                                    <div class="param-item">
+                                        <span class="param-name">priceMin</span>
+                                        <span class="param-type">number</span>
+                                        <p class="param-desc">ราคาต่ำสุด (optional)</p>
+                                    </div>
+                                    <div class="param-item">
+                                        <span class="param-name">priceMax</span>
+                                        <span class="param-type">number</span>
+                                        <p class="param-desc">ราคาสูงสุด (optional)</p>
+                                    </div>
+                                </div>
+                                <div class="api-params">
+                                    <h4>Response (200 OK):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "data": {
+    "hotels": [
+      {
+        "hotel_id": "htl_001",
+        "name": "Grand Palace Hotel Bangkok",
+        "address": "123 Sukhumvit Road, Watthana",
+        "city": "Bangkok",
+        "country": "Thailand",
+        "rating": 4.8,
+        "description": "Luxury hotel in the heart of Bangkok",
+        "images": [
+          "https://example.com/hotel1_img1.jpg",
+          "https://example.com/hotel1_img2.jpg"
+        ],
+        "amenities": ["WiFi", "Pool", "Spa", "Gym"],
+        "price_range": {
+          "min": 2500,
+          "max": 8000
+        },
+        "available_rooms": 15,
+        "location": {
+          "latitude": 13.7563,
+          "longitude": 100.5018
+        }
+      },
+      {
+        "hotel_id": "htl_002", 
+        "name": "Riverside Resort",
+        "address": "456 Chaophraya Road, Khlong San",
+        "city": "Bangkok",
+        "country": "Thailand",
+        "rating": 4.5,
+        "description": "Peaceful resort by the river",
+        "images": [
+          "https://example.com/hotel2_img1.jpg"
+        ],
+        "amenities": ["WiFi", "Pool", "Restaurant"],
+        "price_range": {
+          "min": 1800,
+          "max": 5000
+        },
+        "available_rooms": 8,
+        "location": {
+          "latitude": 13.7398,
+          "longitude": 100.5014
+        }
+      }
+    ],
+    "pagination": {
+      "current_page": 1,
+      "total_pages": 5,
+      "total_hotels": 50,
+      "per_page": 10
+    },
+    "filters_applied": {
+      "city": "Bangkok",
+      "checkIn": "2024-02-15",
+      "checkOut": "2024-02-17",
+      "guests": 2
+    }
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Main query to get hotels with available rooms
+SELECT 
+    h.hotel_id,
+    h.name,
+    h.address,
+    h.city,
+    h.country,
+    h.rating,
+    h.description,
+    h.images,
+    h.amenities,
+    h.latitude,
+    h.longitude,
+    MIN(r.price_per_night) as min_price,
+    MAX(r.price_per_night) as max_price,
+    COUNT(DISTINCT ar.room_id) as available_rooms
+FROM hotels h
+INNER JOIN rooms r ON h.hotel_id = r.hotel_id
+LEFT JOIN (
+    -- Subquery to find available rooms (not booked for the requested dates)
+    SELECT DISTINCT room_id
+    FROM rooms 
+    WHERE room_id NOT IN (
+        SELECT DISTINCT b.room_id
+        FROM bookings b
+        WHERE b.status IN ('confirmed', 'checked_in')
+          AND (
+            (b.check_in_date <= '2024-02-15' AND b.check_out_date > '2024-02-15') OR
+            (b.check_in_date < '2024-02-17' AND b.check_out_date >= '2024-02-17') OR
+            (b.check_in_date >= '2024-02-15' AND b.check_out_date <= '2024-02-17')
+          )
+    )
+    AND max_occupancy >= 2  -- guests filter
+) ar ON r.room_id = ar.room_id
+WHERE h.city = 'Bangkok'
+  AND h.status = 'active'
+  AND r.available = true
+GROUP BY h.hotel_id
+HAVING available_rooms > 0
+ORDER BY h.rating DESC, min_price ASC
+LIMIT 10 OFFSET 0;
+
+-- Count total results for pagination
+SELECT COUNT(DISTINCT h.hotel_id) as total_count
+FROM hotels h
+INNER JOIN rooms r ON h.hotel_id = r.hotel_id
+WHERE h.city = 'Bangkok' 
+  AND h.status = 'active'
+  AND r.available = true;</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>GET /api/hotels/{id}</span>
+                                <span class="api-method">GET</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">ดึงข้อมูลโรงแรมตาม ID พร้อมรายละเอียดห้องพัก</p>
+                                <div class="api-params">
+                                    <h4>Response (200 OK):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "data": {
+    "hotel": {
+      "hotel_id": "htl_001",
+      "name": "Grand Palace Hotel Bangkok",
+      "address": "123 Sukhumvit Road, Watthana",
+      "city": "Bangkok",
+      "country": "Thailand",
+      "rating": 4.8,
+      "description": "Luxury hotel in the heart of Bangkok...",
+      "images": ["https://example.com/hotel1_img1.jpg"],
+      "amenities": ["WiFi", "Pool", "Spa", "Gym", "Restaurant"],
+      "policies": {
+        "check_in": "15:00",
+        "check_out": "12:00",
+        "cancellation": "Free cancellation until 24 hours before check-in"
+      },
+      "contact": {
+        "phone": "+66-2-123-4567",
+        "email": "info@grandpalace.com"
+      }
+    },
+    "rooms": [
+      {
+        "room_id": "rm_001",
+        "room_number": "101",
+        "room_type": "Deluxe King",
+        "price_per_night": 3500,
+        "max_occupancy": 2,
+        "amenities": ["King Bed", "City View", "Mini Bar", "Safe"],
+        "available": true,
+        "images": ["https://example.com/room1.jpg"],
+        "size_sqm": 35
+      },
+      {
+        "room_id": "rm_002",
+        "room_number": "201", 
+        "room_type": "Suite",
+        "price_per_night": 6500,
+        "max_occupancy": 4,
+        "amenities": ["Separate Living Room", "River View", "Balcony"],
+        "available": true,
+        "images": ["https://example.com/room2.jpg"],
+        "size_sqm": 65
+      }
+    ],
+    "reviews_summary": {
+      "average_rating": 4.8,
+      "total_reviews": 342,
+      "rating_breakdown": {
+        "5": 256,
+        "4": 68,
+        "3": 15,
+        "2": 2,
+        "1": 1
+      }
+    }
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Get hotel details
+SELECT 
+    hotel_id,
+    name,
+    address,
+    city,
+    country,
+    rating,
+    description,
+    images,
+    amenities,
+    policies,
+    contact_phone,
+    contact_email,
+    check_in_time,
+    check_out_time,
+    cancellation_policy
+FROM hotels 
+WHERE hotel_id = 'htl_001' 
+  AND status = 'active';
+
+-- Get all rooms for this hotel
+SELECT 
+    room_id,
+    room_number,
+    room_type,
+    price_per_night,
+    max_occupancy,
+    amenities,
+    available,
+    images,
+    size_sqm,
+    floor_number
+FROM rooms 
+WHERE hotel_id = 'htl_001' 
+  AND status = 'active'
+ORDER BY room_number;
+
+-- Get reviews summary
+SELECT 
+    AVG(rating) as average_rating,
+    COUNT(*) as total_reviews,
+    SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END) as rating_5,
+    SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END) as rating_4,
+    SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END) as rating_3,
+    SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END) as rating_2,
+    SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END) as rating_1
+FROM reviews 
+WHERE hotel_id = 'htl_001' 
+  AND status = 'approved';</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Booking APIs -->
+                <div class="api-endpoint">
+                    <div class="api-header">
+                        <span>📋 Booking APIs</span>
+                    </div>
+                    <div class="api-body">
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>POST /api/bookings</span>
+                                <span class="api-method">POST</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">สร้างการจองใหม่</p>
+                                <div class="api-params">
+                                    <h4>Request Body:</h4>
+                                    <pre
+                                        style="background: #f1f5f9; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "room_id": "rm_001",
+  "check_in_date": "2024-02-15",
+  "check_out_date": "2024-02-17",
+  "guest_count": 2,
+  "special_requests": "Late check-in requested",
+  "guest_details": {
+    "primary_guest": {
+      "title": "Mr.",
+      "first_name": "John",
+      "last_name": "Doe",
+      "email": "john.doe@example.com",
+      "phone": "+66812345678"
+    },
+    "additional_guests": [
+      {
+        "title": "Mrs.",
+        "first_name": "Jane", 
+        "last_name": "Doe"
+      }
+    ]
+  }
+}</pre>
+                                </div>
+                                <div class="api-params">
+                                    <h4>Response (201 Created):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "message": "Booking created successfully",
+  "data": {
+    "booking": {
+      "booking_id": "bkg_9876543210",
+      "user_id": "usr_1234567890",
+      "room_id": "rm_001",
+      "hotel_id": "htl_001",
+      "check_in_date": "2024-02-15",
+      "check_out_date": "2024-02-17",
+      "guest_count": 2,
+      "nights": 2,
+      "room_details": {
+        "room_type": "Deluxe King",
+        "room_number": "101",
+        "price_per_night": 3500
+      },
+      "pricing": {
+        "subtotal": 7000,
+        "taxes": 770,
+        "service_charges": 350,
+        "total_amount": 8120
+      },
+      "status": "confirmed",
+      "created_at": "2024-01-15T08:30:00Z",
+      "confirmation_code": "GPC240215A001",
+      "special_requests": "Late check-in requested"
+    },
+    "payment_required": {
+      "amount": 8120,
+      "currency": "THB",
+      "due_date": "2024-01-16T08:30:00Z"
+    }
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Check room availability first
+SELECT r.room_id, r.price_per_night, r.max_occupancy, h.name as hotel_name
+FROM rooms r
+INNER JOIN hotels h ON r.hotel_id = h.hotel_id
+WHERE r.room_id = 'rm_001' 
+  AND r.available = true
+  AND r.max_occupancy >= 2
+  AND r.room_id NOT IN (
+    SELECT room_id FROM bookings 
+    WHERE status IN ('confirmed', 'checked_in')
+      AND (
+        (check_in_date <= '2024-02-15' AND check_out_date > '2024-02-15') OR
+        (check_in_date < '2024-02-17' AND check_out_date >= '2024-02-17') OR
+        (check_in_date >= '2024-02-15' AND check_out_date <= '2024-02-17')
+      )
+  );
+
+-- Create the booking
+INSERT INTO bookings (
+    booking_id,
+    user_id,
+    room_id,
+    check_in_date,
+    check_out_date,
+    guest_count,
+    total_amount,
+    status,
+    confirmation_code,
+    special_requests,
+    created_at
+) VALUES (
+    'bkg_9876543210',
+    'usr_1234567890',
+    'rm_001',
+    '2024-02-15',
+    '2024-02-17',
+    2,
+    8120.00,
+    'confirmed',
+    'GPC240215A001',
+    'Late check-in requested',
+    NOW()
+);
+
+-- Get full booking details with hotel and room info
+SELECT 
+    b.booking_id,
+    b.user_id,
+    b.check_in_date,
+    b.check_out_date,
+    b.guest_count,
+    b.total_amount,
+    b.status,
+    b.confirmation_code,
+    b.special_requests,
+    b.created_at,
+    DATEDIFF(b.check_out_date, b.check_in_date) as nights,
+    h.hotel_id,
+    h.name as hotel_name,
+    r.room_type,
+    r.room_number,
+    r.price_per_night
+FROM bookings b
+INNER JOIN rooms r ON b.room_id = r.room_id
+INNER JOIN hotels h ON r.hotel_id = h.hotel_id
+WHERE b.booking_id = 'bkg_9876543210';</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>GET /api/bookings/{id}</span>
+                                <span class="api-method">GET</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">ดึงข้อมูลการจองตาม ID</p>
+                                <div class="api-params">
+                                    <h4>Response (200 OK):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "data": {
+    "booking": {
+      "booking_id": "bkg_9876543210",
+      "status": "confirmed",
+      "confirmation_code": "GPC240215A001", 
+      "check_in_date": "2024-02-15",
+      "check_out_date": "2024-02-17",
+      "guest_count": 2,
+      "nights": 2,
+      "total_amount": 8120,
+      "created_at": "2024-01-15T08:30:00Z"
+    },
+    "hotel_details": {
+      "hotel_id": "htl_001",
+      "name": "Grand Palace Hotel Bangkok",
+      "address": "123 Sukhumvit Road, Watthana",
+      "phone": "+66-2-123-4567"
+    },
+    "room_details": {
+      "room_id": "rm_001",
+      "room_type": "Deluxe King",
+      "room_number": "101"
+    },
+    "payment_status": {
+      "status": "paid",
+      "payment_date": "2024-01-15T09:15:00Z",
+      "payment_method": "credit_card"
+    }
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Get complete booking information with related data
+SELECT 
+    b.booking_id,
+    b.status,
+    b.confirmation_code,
+    b.check_in_date,
+    b.check_out_date,
+    b.guest_count,
+    b.total_amount,
+    b.special_requests,
+    b.created_at,
+    DATEDIFF(b.check_out_date, b.check_in_date) as nights,
+    
+    -- Hotel details
+    h.hotel_id,
+    h.name as hotel_name,
+    h.address as hotel_address,
+    h.contact_phone as hotel_phone,
+    
+    -- Room details  
+    r.room_id,
+    r.room_type,
+    r.room_number,
+    r.price_per_night,
+    
+    -- Payment status (latest payment)
+    p.status as payment_status,
+    p.payment_date,
+    p.payment_method
+    
+FROM bookings b
+INNER JOIN rooms r ON b.room_id = r.room_id
+INNER JOIN hotels h ON r.hotel_id = h.hotel_id
+LEFT JOIN (
+    SELECT 
+        booking_id,
+        status,
+        payment_date,
+        payment_method,
+        ROW_NUMBER() OVER (PARTITION BY booking_id ORDER BY payment_date DESC) as rn
+    FROM payments
+) p ON b.booking_id = p.booking_id AND p.rn = 1
+WHERE b.booking_id = 'bkg_9876543210';
+
+-- Get all payments for this booking
+SELECT 
+    payment_id,
+    amount,
+    payment_method,
+    status,
+    payment_date,
+    transaction_id
+FROM payments 
+WHERE booking_id = 'bkg_9876543210'
+ORDER BY payment_date DESC;</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment APIs -->
+                <div class="api-endpoint">
+                    <div class="api-header">
+                        <span>💳 Payment APIs</span>
+                    </div>
+                    <div class="api-body">
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>POST /api/payments</span>
+                                <span class="api-method">POST</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">ประมวลผลการชำระเงิน</p>
+                                <div class="api-params">
+                                    <h4>Request Body:</h4>
+                                    <pre
+                                        style="background: #f1f5f9; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "booking_id": "bkg_9876543210",
+  "amount": 8120,
+  "currency": "THB",
+  "payment_method": "credit_card",
+  "payment_details": {
+    "card_number": "4111111111111111",
+    "cardholder_name": "John Doe", 
+    "expiry_month": "12",
+    "expiry_year": "2026",
+    "cvv": "123",
+    "billing_address": {
+      "address_line1": "123 Main Street",
+      "city": "Bangkok",
+      "postal_code": "10110",
+      "country": "TH"
+    }
+  }
+}</pre>
+                                </div>
+                                <div class="api-params">
+                                    <h4>Response (200 OK):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "message": "Payment processed successfully",
+  "data": {
+    "payment": {
+      "payment_id": "pay_1234567890",
+      "booking_id": "bkg_9876543210",
+      "amount": 8120,
+      "currency": "THB",
+      "payment_method": "credit_card",
+      "status": "completed",
+      "transaction_id": "txn_abc123def456",
+      "payment_date": "2024-01-15T09:15:00Z",
+      "gateway_response": {
+        "authorization_code": "123456",
+        "reference_number": "REF789012"
+      }
+    },
+    "booking_status": {
+      "booking_id": "bkg_9876543210",
+      "status": "confirmed",
+      "payment_status": "paid"
+    },
+    "receipt": {
+      "receipt_number": "RCP240115001",
+      "download_url": "https://api.example.com/receipts/RCP240115001.pdf"
+    }
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Start transaction
+BEGIN;
+
+-- Verify booking exists and amount matches
+SELECT 
+    booking_id,
+    total_amount,
+    status,
+    user_id
+FROM bookings 
+WHERE booking_id = 'bkg_9876543210' 
+  AND status = 'confirmed'
+  AND total_amount = 8120.00;
+
+-- Insert payment record
+INSERT INTO payments (
+    payment_id,
+    booking_id,
+    amount,
+    currency,
+    payment_method,
+    status,
+    transaction_id,
+    payment_date,
+    gateway_response,
+    notes
+) VALUES (
+    'pay_1234567890',
+    'bkg_9876543210',
+    8120.00,
+    'THB',
+    'credit_card',
+    'completed',
+    'txn_abc123def456',
+    NOW(),
+    JSON_OBJECT(
+        'authorization_code', '123456',
+        'reference_number', 'REF789012',
+        'gateway', 'stripe'
+    ),
+    'Credit card payment processed successfully'
+);
+
+-- Update booking payment status
+UPDATE bookings 
+SET 
+    payment_status = 'paid',
+    updated_at = NOW()
+WHERE booking_id = 'bkg_9876543210';
+
+-- Generate receipt record
+INSERT INTO receipts (
+    receipt_id,
+    booking_id,
+    payment_id,
+    receipt_number,
+    amount,
+    issued_date,
+    file_path
+) VALUES (
+    'rcp_001',
+    'bkg_9876543210',
+    'pay_1234567890',
+    'RCP240115001',
+    8120.00,
+    NOW(),
+    '/receipts/2024/01/RCP240115001.pdf'
+);
+
+-- Commit transaction
+COMMIT;</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>GET /api/payments/{id}</span>
+                                <span class="api-method">GET</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">ดึงข้อมูลการชำระเงินตาม ID</p>
+                                <div class="api-params">
+                                    <h4>Response (200 OK):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "data": {
+    "payment": {
+      "payment_id": "pay_1234567890",
+      "booking_id": "bkg_9876543210",
+      "amount": 8120,
+      "currency": "THB", 
+      "payment_method": "credit_card",
+      "status": "completed",
+      "transaction_id": "txn_abc123def456",
+      "payment_date": "2024-01-15T09:15:00Z",
+      "card_last_four": "1111",
+      "receipt_number": "RCP240115001"
+    }
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Get payment details with related information
+SELECT 
+    p.payment_id,
+    p.booking_id,
+    p.amount,
+    p.currency,
+    p.payment_method,
+    p.status,
+    p.transaction_id,
+    p.payment_date,
+    
+    -- Extract card info (masked for security)
+    CASE 
+        WHEN p.payment_method = 'credit_card' 
+        THEN RIGHT(JSON_EXTRACT(p.gateway_response, '$.card_number'), 4)
+        ELSE NULL 
+    END as card_last_four,
+    
+    -- Receipt information
+    r.receipt_number,
+    r.file_path as receipt_file_path,
+    
+    -- Booking context
+    b.confirmation_code,
+    h.name as hotel_name
+    
+FROM payments p
+LEFT JOIN receipts r ON p.payment_id = r.payment_id
+LEFT JOIN bookings b ON p.booking_id = b.booking_id
+LEFT JOIN rooms rm ON b.room_id = rm.room_id
+LEFT JOIN hotels h ON rm.hotel_id = h.hotel_id
+WHERE p.payment_id = 'pay_1234567890';</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Reviews APIs -->
+                <div class="api-endpoint">
+                    <div class="api-header">
+                        <span>⭐ Review APIs</span>
+                    </div>
+                    <div class="api-body">
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>POST /api/reviews</span>
+                                <span class="api-method">POST</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">เขียนรีวิวโรงแรม</p>
+                                <div class="api-params">
+                                    <h4>Request Body:</h4>
+                                    <pre
+                                        style="background: #f1f5f9; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "hotel_id": "htl_001",
+  "booking_id": "bkg_9876543210",
+  "rating": 5,
+  "comment": "Excellent service and beautiful rooms. Highly recommended!",
+  "categories": {
+    "cleanliness": 5,
+    "service": 5,
+    "location": 4,
+    "value_for_money": 4,
+    "amenities": 5
+  }
+}</pre>
+                                </div>
+                                <div class="api-params">
+                                    <h4>Response (201 Created):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "message": "Review submitted successfully",
+  "data": {
+    "review": {
+      "review_id": "rev_1234567890",
+      "user_id": "usr_1234567890",
+      "hotel_id": "htl_001",
+      "booking_id": "bkg_9876543210",
+      "rating": 5,
+      "comment": "Excellent service and beautiful rooms. Highly recommended!",
+      "categories": {
+        "cleanliness": 5,
+        "service": 5,
+        "location": 4,
+        "value_for_money": 4,
+        "amenities": 5
+      },
+      "review_date": "2024-02-20T10:30:00Z",
+      "verified": true,
+      "helpful_count": 0,
+      "reviewer_name": "John D."
+    }
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Verify user has completed stay and hasn't reviewed yet
+SELECT 
+    b.booking_id,
+    b.user_id,
+    b.check_out_date,
+    r.hotel_id,
+    CASE WHEN rv.review_id IS NULL THEN 'can_review' ELSE 'already_reviewed' END as review_status
+FROM bookings b
+INNER JOIN rooms r ON b.room_id = r.room_id
+LEFT JOIN reviews rv ON b.booking_id = rv.booking_id
+WHERE b.booking_id = 'bkg_9876543210'
+  AND b.user_id = 'usr_1234567890'
+  AND b.status = 'completed'
+  AND b.check_out_date < NOW()
+  AND rv.review_id IS NULL;  -- hasn't reviewed yet
+
+-- Insert the review
+INSERT INTO reviews (
+    review_id,
+    user_id,
+    hotel_id,
+    booking_id,
+    rating,
+    comment,
+    category_ratings,
+    review_date,
+    verified,
+    helpful_count,
+    status
+) VALUES (
+    'rev_1234567890',
+    'usr_1234567890',
+    'htl_001',
+    'bkg_9876543210',
+    5,
+    'Excellent service and beautiful rooms. Highly recommended!',
+    JSON_OBJECT(
+        'cleanliness', 5,
+        'service', 5,
+        'location', 4,
+        'value_for_money', 4,
+        'amenities', 5
+    ),
+    NOW(),
+    true,  -- verified because linked to booking
+    0,
+    'approved'
+);
+
+-- Update hotel's average rating
+UPDATE hotels 
+SET rating = (
+    SELECT AVG(rating) 
+    FROM reviews 
+    WHERE hotel_id = 'htl_001' 
+      AND status = 'approved'
+),
+total_reviews = (
+    SELECT COUNT(*) 
+    FROM reviews 
+    WHERE hotel_id = 'htl_001' 
+      AND status = 'approved'
+)
+WHERE hotel_id = 'htl_001';</pre>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="api-endpoint">
+                            <div class="api-header">
+                                <span>GET /api/hotels/{hotel_id}/reviews</span>
+                                <span class="api-method">GET</span>
+                            </div>
+                            <div class="api-body">
+                                <p class="api-description">ดึงรีวิวของโรงแรม</p>
+                                <div class="api-params">
+                                    <h4>Response (200 OK):</h4>
+                                    <pre
+                                        style="background: #f0fdf4; padding: 15px; border-radius: 8px; overflow-x: auto; color: #1e293b;">
+{
+  "success": true,
+  "data": {
+    "reviews": [
+      {
+        "review_id": "rev_1234567890",
+        "rating": 5,
+        "comment": "Excellent service and beautiful rooms...",
+        "review_date": "2024-02-20T10:30:00Z",
+        "verified": true,
+        "helpful_count": 5,
+        "reviewer_name": "John D.",
+        "categories": {
+          "cleanliness": 5,
+          "service": 5,
+          "location": 4,
+          "value_for_money": 4,
+          "amenities": 5
+        }
+      }
+    ],
+    "summary": {
+      "average_rating": 4.8,
+      "total_reviews": 342,
+      "rating_distribution": {
+        "5": 256,
+        "4": 68,
+        "3": 15,
+        "2": 2,
+        "1": 1
+      }
+    },
+    "pagination": {
+      "current_page": 1,
+      "total_pages": 35,
+      "per_page": 10
+    }
+  }
+}</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>💾 SQL Example:</h4>
+                                    <pre
+                                        style="background: #fef3c7; padding: 15px; border-radius: 8px; overflow-x: auto; color: #92400e;">
+-- Get paginated reviews for hotel
+SELECT 
+    r.review_id,
+    r.rating,
+    r.comment,
+    r.review_date,
+    r.verified,
+    r.helpful_count,
+    r.category_ratings,
+    
+    -- Reviewer info (masked for privacy)
+    CONCAT(LEFT(u.first_name, 1), '. ', LEFT(u.last_name, 1), '.') as reviewer_name,
+    
+    -- Stay details for context
+    b.check_in_date,
+    b.check_out_date,
+    rm.room_type
+    
+FROM reviews r
+INNER JOIN users u ON r.user_id = u.user_id
+LEFT JOIN bookings b ON r.booking_id = b.booking_id
+LEFT JOIN rooms rm ON b.room_id = rm.room_id
+WHERE r.hotel_id = 'htl_001'
+  AND r.status = 'approved'
+ORDER BY r.review_date DESC
+LIMIT 10 OFFSET 0;
+
+-- Get review summary statistics
+SELECT 
+    AVG(rating) as average_rating,
+    COUNT(*) as total_reviews,
+    SUM(CASE WHEN rating = 5 THEN 1 ELSE 0 END) as rating_5,
+    SUM(CASE WHEN rating = 4 THEN 1 ELSE 0 END) as rating_4,
+    SUM(CASE WHEN rating = 3 THEN 1 ELSE 0 END) as rating_3,
+    SUM(CASE WHEN rating = 2 THEN 1 ELSE 0 END) as rating_2,
+    SUM(CASE WHEN rating = 1 THEN 1 ELSE 0 END) as rating_1,
+    
+    -- Category averages
+    AVG(JSON_EXTRACT(category_ratings, '$.cleanliness')) as avg_cleanliness,
+    AVG(JSON_EXTRACT(category_ratings, '$.service')) as avg_service,
+    AVG(JSON_EXTRACT(category_ratings, '$.location')) as avg_location,
+    AVG(JSON_EXTRACT(category_ratings, '$.value_for_money')) as avg_value,
+    AVG(JSON_EXTRACT(category_ratings, '$.amenities')) as avg_amenities
+    
+FROM reviews 
+WHERE hotel_id = 'htl_001' 
+  AND status = 'approved';
+
+-- Count total reviews for pagination
+SELECT COUNT(*) as total_count
+FROM reviews 
+WHERE hotel_id = 'htl_001' 
+  AND status = 'approved';</pre>
+                                </div>
+
+                                <div class="api-params">
+                                    <h4>📊 Advanced SQL Queries:</h4>
+                                    <pre
+                                        style="background: #f3e8ff; padding: 15px; border-radius: 8px; overflow-x: auto; color: #6b21a8;">
+-- Complex analytics query: Hotel performance dashboard
+SELECT 
+    h.hotel_id,
+    h.name,
+    h.city,
+    
+    -- Booking metrics
+    COUNT(DISTINCT b.booking_id) as total_bookings,
+    AVG(b.total_amount) as avg_booking_value,
+    SUM(b.total_amount) as total_revenue,
+    
+    -- Review metrics
+    AVG(r.rating) as avg_rating,
+    COUNT(DISTINCT r.review_id) as total_reviews,
+    
+    -- Occupancy rate (last 30 days)
+    (COUNT(DISTINCT CASE 
+        WHEN b.check_in_date >= DATE_SUB(NOW(), INTERVAL 30 DAY) 
+        THEN b.booking_id 
+    END) * 100.0 / (
+        SELECT COUNT(*) * 30 
+        FROM rooms 
+        WHERE hotel_id = h.hotel_id
+    )) as occupancy_rate_30d,
+    
+    -- Customer satisfaction trends
+    (SELECT AVG(rating) 
+     FROM reviews 
+     WHERE hotel_id = h.hotel_id 
+       AND review_date >= DATE_SUB(NOW(), INTERVAL 30 DAY)
+    ) as recent_rating
+    
+FROM hotels h
+LEFT JOIN rooms rm ON h.hotel_id = rm.hotel_id
+LEFT JOIN bookings b ON rm.room_id = b.room_id
+LEFT JOIN reviews r ON h.hotel_id = r.hotel_id
+WHERE h.status = 'active'
+GROUP BY h.hotel_id
+ORDER BY total_revenue DESC;</pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Business Rules Tab -->
+        <div id="business-rules" class="tab-content">
+            <div class="business-rules">
+                <h2 class="diagram-title">Business Rules & Constraints</h2>
+                <div class="diagram-description">
+                    <h3>⚖️ กฎธุรกิจและข้อจำกัด</h3>
+                    <p>กฎเกณฑ์และข้อจำกัดทางธุรกิจสำหรับการดำเนินงานของระบบจองโรงแรมออนไลน์</p>
+                </div>
+
+                <div class="rule-category">
+                    <h3>👤 User Management Rules</h3>
+                    <div class="rule-item">
+                        <h4>การสมัครสมาชิก</h4>
+                        <p>• ผู้ใช้ต้องมีอีเมลที่ไม่ซ้ำกันในระบบ<br>
+                            • รหัสผ่านต้องมีความยาวอย่างน้อย 8 ตัวอักษร<br>
+                            • ต้องยืนยันอีเมลก่อนสามารถจองได้<br>
+                            • อายุต้องไม่ต่ำกว่า 18 ปี</p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>การเข้าสู่ระบบ</h4>
+                        <p>• ล็อกอินล้มเหลว 5 ครั้ง บัญชีจะถูกล็อกชั่วคราว 30 นาที<br>
+                            • Session timeout หลังจากไม่มีการใช้งาน 2 ชั่วโมง<br>
+                            • รองรับการล็อกอินผ่าน Social Media</p>
+                    </div>
+                </div>
+
+                <div class="rule-category">
+                    <h3>🏨 Hotel & Room Rules</h3>
+                    <div class="rule-item">
+                        <h4>การแสดงผลโรงแรม</h4>
+                        <p>• แสดงเฉพาะโรงแรมที่มีสถานะ "Active"<br>
+                            • ราคาแสดงรวมภาษีและค่าบริการ<br>
+                            • รูปภาพต้องมีขนาดไม่เกิน 5MB<br>
+                            • ต้องมีรูปอย่างน้อย 3 รูปต่อโรงแรม</p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>การจัดการห้องพัก</h4>
+                        <p>• ห้องต้องมี availability calendar อัปเดต<br>
+                            • ราคาห้องสามารถแตกต่างกันตามวันและฤดูกาล<br>
+                            • จำนวนผู้เข้าพักต้องไม่เกิน max_occupancy<br>
+                            • ห้องที่ maintenance ต้องถูกซ่อนจากระบบ</p>
+                    </div>
+                </div>
+
+                <div class="rule-category">
+                    <h3>📋 Booking Rules</h3>
+                    <div class="rule-item">
+                        <h4>การจองห้องพัก</h4>
+                        <p>• วันที่เช็คอินต้องเป็นวันในอนาคต<br>
+                            • วันที่เช็คเอาท์ต้องหลังวันเช็คอิน<br>
+                            • การจองสามารถทำได้สูงสุด 365 วันล่วงหน้า<br>
+                            • ระยะเวลาการเข้าพักขั้นต่ำ 1 คืน สูงสุด 30 คืน</p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>การยกเลิกการจอง</h4>
+                        <p>• ยกเลิกฟรีก่อน 24 ชั่วโมงจากวันเช็คอิน<br>
+                            • ยกเลิกภายใน 24 ชั่วโมง เก็บค่าธรรมเนียม 50%<br>
+                            • No-show เก็บค่าห้องเต็มจำนวน<br>
+                            • บางโรงแรมมี non-refundable rate</p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>การแก้ไขการจอง</h4>
+                        <p>• แก้ไขได้ก่อนวันเช็คอิน 48 ชั่วโมง<br>
+                            • เปลี่ยนวันที่อาจมีค่าธรรมเนียมเพิ่มเติม<br>
+                            • เปลี่ยนประเภทห้องต้องจ่ายส่วนต่าง<br>
+                            • ไม่สามารถลดจำนวนผู้เข้าพักหลังจองแล้ว</p>
+                    </div>
+                </div>
+
+                <div class="rule-category">
+                    <h3>💳 Payment Rules</h3>
+                    <div class="rule-item">
+                        <h4>การชำระเงิน</h4>
+                        <p>• รองรับบัตรเครดิต Visa, Mastercard, JCB<br>
+                            • ชำระผ่าน E-wallet: TrueMoney, ShopeePay<br>
+                            • ธนาณัติ: PromptPay, Bank Transfer<br>
+                            • ต้องชำระเต็มจำนวนเมื่อจอง</p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>การคืนเงิน</h4>
+                        <p>• ระยะเวลาคืนเงิน 7-14 วันทำการ<br>
+                            • คืนเงินผ่านช่องทางเดิมที่ชำระ<br>
+                            • หักค่าธรรมเนียมการทำธุรกรรม 2.5%<br>
+                            • ไม่คืนเงินสำหรับ promotional rate</p>
+                    </div>
+                </div>
+
+                <div class="rule-category">
+                    <h3>⭐ Review & Rating Rules</h3>
+                    <div class="rule-item">
+                        <h4>การเขียนรีวิว</h4>
+                        <p>• รีวิวได้เฉพาะผู้ที่เข้าพักจริง<br>
+                            • รีวิวได้ภายใน 30 วันหลังเช็คเอาท์<br>
+                            • คะแนน 1-5 ดาว ต้องระบุเหตุผล<br>
+                            • ไม่อนุญาตภาษาหยาบคายหรือเนื้อหาไม่เหมาะสม</p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>การตอบกลับรีวิว</h4>
+                        <p>• โรงแรมตอบกลับได้ภายใน 14 วัน<br>
+                            • ตอบกลับได้เพียงครั้งเดียวต่อรีวิว<br>
+                            • ต้องใช้ภาษาสุภาพและเป็นมืออาชีพ<br>
+                            • ไม่อนุญาตการโฆษณาในการตอบกลับ</p>
+                    </div>
+                </div>
+
+                <div class="rule-category">
+                    <h3>🔒 Security & Privacy Rules</h3>
+                    <div class="rule-item">
+                        <h4>ความปลอดภัยข้อมูล</h4>
+                        <p>• ข้อมูลบัตรเครดิตเข้ารหัสด้วย SSL/TLS<br>
+                            • รหัสผ่านเก็บแบบ hash (bcrypt)<br>
+                            • Log การเข้าถึงข้อมูลสำคัญ<br>
+                            • Two-factor authentication สำหรับ admin</p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>ความเป็นส่วนตัว</h4>
+                        <p>• ไม่แชร์ข้อมูลส่วนตัวกับบุคคลที่สาม<br>
+                            • ผู้ใช้สามารถลบบัญชีได้ (GDPR compliance)<br>
+                            • เก็บ log การเข้าถึงข้อมูล 2 ปี<br>
+                            • แจ้งเตือนเมื่อมีการเข้าถึงผิดปกติ</p>
+                    </div>
+                </div>
+
+                <div class="rule-category">
+                    <h3>📊 System Performance Rules</h3>
+                    <div class="rule-item">
+                        <h4>ประสิทธิภาพระบบ</h4>
+                        <p>• Response time ไม่เกิน 3 วินาที<br>
+                            • Uptime ต้องมากกว่า 99.5%<br>
+                            • รองรับผู้ใช้งานพร้อมกัน 10,000 คน<br>
+                            • Auto-scaling เมื่อ load สูง</p>
+                    </div>
+                    <div class="rule-item">
+                        <h4>การสำรองข้อมูล</h4>
+                        <p>• Backup database ทุกวันเวลา 02:00<br>
+                            • เก็บ backup 30 วันสำหรับ daily<br>
+                            • เก็บ backup 12 เดือนสำหรับ monthly<br>
+                            • Test recovery ทุกเดือน</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Interactive Demo Tab -->
+        <div id="demo" class="tab-content">
+            <div class="diagram-container">
+                <h2 class="diagram-title">Interactive Demo</h2>
+                <div class="diagram-description">
+                    <h3>🎮 Hotel Booking System Demo</h3>
+                    <p>ตัวอย่างการทำงานของระบบจองโรงแรมออนไลน์แบบ Interactive</p>
+                </div>
+
+                <div class="interactive-demo">
+                    <h3>🏨 Hotel Search Demo</h3>
+                    <p>ค้นหาโรงแรมในเมืองที่คุณต้องการ</p>
+
+                    <div style="display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap; justify-content: center;">
+                        <input type="text" id="cityInput" placeholder="เมืองปลายทาง (เช่น กรุงเทพ)"
+                            style="padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; min-width: 200px;">
+
+                        <input type="date" id="checkinDate"
+                            style="padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+
+                        <input type="date" id="checkoutDate"
+                            style="padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+
+                        <select id="guestCount"
+                            style="padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                            <option value="1">1 ผู้เข้าพัก</option>
+                            <option value="2">2 ผู้เข้าพัก</option>
+                            <option value="3">3 ผู้เข้าพัก</option>
+                            <option value="4">4 ผู้เข้าพัก</option>
+                        </select>
+
+                        <button class="demo-button" onclick="searchHotels()">🔍 ค้นหาโรงแรม</button>
+                    </div>
+
+                    <div id="searchResults" style="margin-top: 30px; display: none;">
+                        <h4>🎯 ผลการค้นหา</h4>
+                        <div id="hotelsList" class="stats-grid" style="margin-top: 20px;"></div>
+                    </div>
+                </div>
+
+                <div class="interactive-demo" style="margin-top: 30px;">
+                    <h3>💳 Payment Demo</h3>
+                    <p>ทดสอบขั้นตอนการชำระเงิน</p>
+
+                    <div style="display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap; justify-content: center;">
+                        <select id="paymentMethod"
+                            style="padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px;">
+                            <option value="credit_card">💳 บัตรเครดิต</option>
+                            <option value="bank_transfer">🏦 โอนผ่านธนาคาร</option>
+                            <option value="e_wallet">📱 E-Wallet</option>
+                            <option value="promptpay">💰 PromptPay</option>
+                        </select>
+
+                        <input type="number" id="paymentAmount" placeholder="จำนวนเงิน (บาท)"
+                            style="padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; min-width: 150px;">
+
+                        <button class="demo-button" onclick="processPayment()">💰 ชำระเงิน</button>
+                    </div>
+
+                    <div id="paymentResult" style="margin-top: 20px;"></div>
+                </div>
+
+                <div class="interactive-demo" style="margin-top: 30px;">
+                    <h3>⭐ Review Demo</h3>
+                    <p>เขียนรีวิวโรงแรม</p>
+
+                    <div style="margin: 20px 0;">
+                        <div style="margin: 15px 0;">
+                            <label>⭐ คะแนน:</label>
+                            <div style="margin: 10px 0;">
+                                <input type="range" id="ratingSlider" min="1" max="5" value="5"
+                                    style="width: 200px; margin: 0 10px;" oninput="updateRatingDisplay()">
+                                <span id="ratingDisplay" style="font-size: 20px;">⭐⭐⭐⭐⭐</span>
+                            </div>
+                        </div>
+
+                        <textarea id="reviewComment" placeholder="แชร์ประสบการณ์ของคุณ..."
+                            style="width: 100%; max-width: 500px; height: 100px; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-size: 16px; margin: 10px 0;"></textarea>
+
+                        <div>
+                            <button class="demo-button" onclick="submitReview()">📝 ส่งรีวิว</button>
+                        </div>
+                    </div>
+
+                    <div id="reviewResult" style="margin-top: 20px;"></div>
+                </div>
+
+                <div class="stats-grid" style="margin-top: 40px;">
+                    <div class="stat-card">
+                        <div class="stat-number">24/7</div>
+                        <div class="stat-label">Customer Support</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">99.9%</div>
+                        <div class="stat-label">Uptime Guarantee</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">500K+</div>
+                        <div class="stat-label">Happy Customers</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">10K+</div>
+                        <div class="stat-label">Partner Hotels</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab functionality
+        function showTab(tabId) {
+            // Hide all tab contents
+            const tabContents = document.querySelectorAll('.tab-content');
+            tabContents.forEach(content => {
+                content.classList.remove('active');
+            });
+
+            // Remove active class from all tab buttons
+            const tabButtons = document.querySelectorAll('.tab-button');
+            tabButtons.forEach(button => {
+                button.classList.remove('active');
+            });
+
+            // Show selected tab content
+            document.getElementById(tabId).classList.add('active');
+
+            // Add active class to clicked button
+            event.target.classList.add('active');
+
+            // Load diagram if needed
+            loadDiagram(tabId);
+        }
+
+        // Loading simulation
+        function loadDiagram(tabId) {
+            const loadingId = getLoadingId(tabId);
+            const containerID = getContainerId(tabId);
+
+            if (loadingId && containerID) {
+                const loading = document.getElementById(loadingId);
+                const container = document.getElementById(containerID);
+
+                if (loading && container && container.style.display === 'none') {
+                    loading.style.display = 'flex';
+
+                    // Simulate loading time
+                    setTimeout(() => {
+                        loading.style.display = 'none';
+                        container.style.display = 'flex';
+                        showSuccess('โหลดแผนภาพสำเร็จ!');
+                    }, 1500);
+                }
+            }
+        }
+
+        function getLoadingId(tabId) {
+            const loadingMap = {
+                'er-diagram': 'er-loading',
+                'booking-flow': 'booking-loading',
+                'payment-flow': 'payment-loading',
+                'architecture': 'arch-loading'
+            };
+            return loadingMap[tabId];
+        }
+
+        function getContainerId(tabId) {
+            const containerMap = {
+                'er-diagram': 'er-svg-container',
+                'booking-flow': 'booking-svg-container',
+                'payment-flow': 'payment-svg-container',
+                'architecture': 'arch-svg-container'
+            };
+            return containerMap[tabId];
+        }
+
+        // Error and Success handling
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.getElementById('successMessage');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 3000);
+        }
+
+        // Demo Functions
+        function searchHotels() {
+            const city = document.getElementById('cityInput').value;
+            const checkin = document.getElementById('checkinDate').value;
+            const checkout = document.getElementById('checkoutDate').value;
+            const guests = document.getElementById('guestCount').value;
+
+            if (!city || !checkin || !checkout) {
+                showError('กรุณากรอกข้อมูลให้ครบถ้วน');
+                return;
+            }
+
+            if (new Date(checkin) >= new Date(checkout)) {
+                showError('วันที่เช็คเอาท์ต้องหลังจากวันเช็คอิน');
+                return;
+            }
+
+            // Simulate search
+            const resultDiv = document.getElementById('searchResults');
+            const hotelsDiv = document.getElementById('hotelsList');
+
+            // Show loading
+            hotelsDiv.innerHTML = '<div class="loading"><div class="loading-spinner"></div><p>กำลังค้นหาโรงแรม...</p></div>';
+            resultDiv.style.display = 'block';
+
+            setTimeout(() => {
+                const sampleHotels = [
+                    { name: 'Grand Palace Hotel', price: 2500, rating: 4.8, location: city },
+                    { name: 'Luxury Resort & Spa', price: 3200, rating: 4.9, location: city },
+                    { name: 'Business Center Hotel', price: 1800, rating: 4.5, location: city },
+                    { name: 'Boutique Riverside', price: 2100, rating: 4.7, location: city }
+                ];
+
+                hotelsDiv.innerHTML = sampleHotels.map(hotel => `
+                    <div class="stat-card zoom-on-hover" onclick="selectHotel('${hotel.name}', ${hotel.price})">
+                        <h4>${hotel.name}</h4>
+                        <div class="stat-number">฿${hotel.price.toLocaleString()}</div>
+                        <div class="stat-label">ต่อคืน</div>
+                        <div style="margin: 10px 0;">
+                            <span style="color: #f59e0b;">${'⭐'.repeat(Math.floor(hotel.rating))}</span>
+                            <span style="color: #64748b;">${hotel.rating}</span>
+                        </div>
+                        <div style="color: #64748b; font-size: 0.9rem;">📍 ${hotel.location}</div>
+                        <div style="color: #64748b; font-size: 0.9rem;">👥 ${guests} ผู้เข้าพัก</div>
+                    </div>
+                `).join('');
+
+                showSuccess(`พบโรงแรม ${sampleHotels.length} แห่งใน${city}`);
+            }, 2000);
+        }
+
+        function selectHotel(hotelName, price) {
+            showSuccess(`เลือก ${hotelName} สำเร็จ! ราคา ฿${price.toLocaleString()} ต่อคืน`);
+
+            // Auto fill payment amount
+            const nights = calculateNights();
+            document.getElementById('paymentAmount').value = price * nights;
+        }
+
+        function calculateNights() {
+            const checkin = document.getElementById('checkinDate').value;
+            const checkout = document.getElementById('checkoutDate').value;
+
+            if (checkin && checkout) {
+                const timeDiff = new Date(checkout) - new Date(checkin);
+                return Math.ceil(timeDiff / (1000 * 60 * 60 * 24));
+            }
+            return 1;
+        }
+
+        function processPayment() {
+            const method = document.getElementById('paymentMethod').value;
+            const amount = document.getElementById('paymentAmount').value;
+            const resultDiv = document.getElementById('paymentResult');
+
+            if (!amount || amount <= 0) {
+                showError('กรุณาระบุจำนวนเงิน');
+                return;
+            }
+
+            const methods = {
+                credit_card: '💳 บัตรเครดิต',
+                bank_transfer: '🏦 โอนผ่านธนาคาร',
+                e_wallet: '📱 E-Wallet',
+                promptpay: '💰 PromptPay'
+            };
+
+            // Simulate payment processing
+            resultDiv.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>กำลังประมวลผลการชำระเงิน...</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                const success = Math.random() > 0.1; // 90% success rate
+
+                if (success) {
+                    resultDiv.innerHTML = `
+                        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; padding: 20px; border-radius: 12px;">
+                            <h4>✅ ชำระเงินสำเร็จ!</h4>
+                            <p><strong>วิธีการชำระ:</strong> ${methods[method]}</p>
+                            <p><strong>จำนวนเงิน:</strong> ฿${parseInt(amount).toLocaleString()}</p>
+                            <p><strong>Transaction ID:</strong> TXN${Date.now()}</p>
+                            <p><strong>เวลา:</strong> ${new Date().toLocaleString('th-TH')}</p>
+                        </div>
+                    `;
+                    showSuccess('ชำระเงินสำเร็จ! อีเมลยืนยันถูกส่งแล้ว');
+                } else {
+                    resultDiv.innerHTML = `
+                        <div style="background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; padding: 20px; border-radius: 12px;">
+                            <h4>❌ การชำระเงินล้มเหลว</h4>
+                            <p>เกิดข้อผิดพลาดในการประมวลผล กรุณาลองใหม่อีกครั้ง</p>
+                        </div>
+                    `;
+                    showError('การชำระเงินล้มเหลว กรุณาตรวจสอบข้อมูลและลองใหม่');
+                }
+            }, 3000);
+        }
+
+        function updateRatingDisplay() {
+            const rating = document.getElementById('ratingSlider').value;
+            const display = document.getElementById('ratingDisplay');
+            display.textContent = '⭐'.repeat(rating);
+        }
+
+        function submitReview() {
+            const rating = document.getElementById('ratingSlider').value;
+            const comment = document.getElementById('reviewComment').value;
+            const resultDiv = document.getElementById('reviewResult');
+
+            if (!comment.trim()) {
+                showError('กรุณาเขียนความคิดเห็น');
+                return;
+            }
+
+            // Simulate review submission
+            resultDiv.innerHTML = `
+                <div class="loading">
+                    <div class="loading-spinner"></div>
+                    <p>กำลังส่งรีวิว...</p>
+                </div>
+            `;
+
+            setTimeout(() => {
+                resultDiv.innerHTML = `
+                    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; color: #16a34a; padding: 20px; border-radius: 12px;">
+                        <h4>✅ ส่งรีวิวสำเร็จ!</h4>
+                        <div style="margin: 15px 0;">
+                            <strong>คะแนน:</strong> ${'⭐'.repeat(rating)} (${rating}/5)
+                        </div>
+                        <div style="margin: 15px 0;">
+                            <strong>ความคิดเห็น:</strong> "${comment}"
+                        </div>
+                        <p style="margin-top: 10px; font-size: 0.9rem;">ขอบคุณสำหรับรีวิว! จะช่วยให้ผู้ใช้คนอื่นได้รับข้อมูลที่ดีขึ้น</p>
+                    </div>
+                `;
+
+                // Clear form
+                document.getElementById('reviewComment').value = '';
+                document.getElementById('ratingSlider').value = 5;
+                updateRatingDisplay();
+
+                showSuccess('ส่งรีวิวสำเร็จ! ขอบคุณสำหรับความคิดเห็น');
+            }, 2000);
+        }
+
+        // Initialize page
+        document.addEventListener('DOMContentLoaded', function () {
+            // Set default dates
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            const dayAfter = new Date(today);
+            dayAfter.setDate(dayAfter.getDate() + 2);
+
+            document.getElementById('checkinDate').value = tomorrow.toISOString().split('T')[0];
+            document.getElementById('checkoutDate').value = dayAfter.toISOString().split('T')[0];
+
+            // Load first diagram
+            loadDiagram('er-diagram');
+
+            // Add keyboard navigation
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+                    const buttons = document.querySelectorAll('.tab-button');
+                    const activeButton = document.querySelector('.tab-button.active');
+                    const currentIndex = Array.from(buttons).indexOf(activeButton);
+
+                    let nextIndex;
+                    if (e.key === 'ArrowRight') {
+                        nextIndex = (currentIndex + 1) % buttons.length;
+                    } else {
+                        nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+                    }
+
+                    buttons[nextIndex].click();
+                }
+            });
+
+            // Add smooth scrolling
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.addEventListener('click', function () {
+                    document.querySelector('.container').scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+            // Initialize progress bars animation
+            setTimeout(() => {
+                document.querySelectorAll('.progress-fill').forEach(bar => {
+                    const width = bar.style.width;
+                    bar.style.width = '0%';
+                    setTimeout(() => {
+                        bar.style.width = width;
+                    }, 100);
+                });
+            }, 1000);
+
+            showSuccess('ระบบ Hotel Booking System พร้อมใช้งาน!');
+        });
+
+        // Add some interactive features
+        document.addEventListener('mousemove', function (e) {
+            // Add subtle parallax effect to header
+            const header = document.querySelector('.header');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+
+            header.style.transform = `translate(${x * 5}px, ${y * 5}px)`;
+        });
+
+        // Add click effects
+        document.addEventListener('click', function (e) {
+            // Create ripple effect
+            if (e.target.classList.contains('demo-button') || e.target.classList.contains('tab-button')) {
+                const button = e.target;
+                const ripple = document.createElement('span');
+                const rect = button.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.3);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s ease-out;
+                    pointer-events: none;
+                `;
+
+                button.style.position = 'relative';
+                button.style.overflow = 'hidden';
+                button.appendChild(ripple);
+
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            }
+        });
+
+        // Add CSS for ripple animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes ripple {
+                to {
+                    transform: scale(2);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+
+</html>

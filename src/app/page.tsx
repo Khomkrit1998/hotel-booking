@@ -6,10 +6,12 @@ import { FeaturedHotelsSection } from "@/components/sections/FeaturedHotelsSecti
 import { NewsletterSection } from "@/components/sections/NewsletterSection";
 import { Footer } from "@/components/layout/Footer";
 import { Hotel, SearchFormData } from "@/types/hotel";
+import { getFeaturedHotels, generateHotelSlug } from "@/lib/hotel-utils";
 import Preloader from "@/components/common/Preload";
 
 export default function HotelLandingPage() {
   const [isLoading, setIsLoading] = useState(true);
+  const [featuredHotels, setFeaturedHotels] = useState<Hotel[]>([]);
 
   // Simulate loading time and preload assets
   useEffect(() => {
@@ -37,6 +39,14 @@ export default function HotelLandingPage() {
         console.log("Some images failed to preload:", error);
       }
 
+      // ดึงข้อมูลโรงแรมแนะนำ
+      try {
+        const hotels = await getFeaturedHotels(4);
+        setFeaturedHotels(hotels);
+      } catch (error) {
+        console.error("Error fetching featured hotels:", error);
+      }
+
       // Minimum loading time for smooth UX
       await new Promise((resolve) => setTimeout(resolve, 2000));
 
@@ -46,65 +56,19 @@ export default function HotelLandingPage() {
     preloadAssets();
   }, []);
 
-  // Mock data สำหรับโรงแรมแนะนำ
-  const featuredHotels: Hotel[] = [
-    {
-      id: 1,
-      name: "Luxury Beach Resort Phuket",
-      location: "ภูเก็ต, ประเทศไทย",
-      price: "฿3,500",
-      rating: 4.8,
-      reviews: 1254,
-      image: "https://images.unsplash.com/photo-1571003123894-1f0594d2b5d9?w=400&h=250&fit=crop",
-      amenities: ["Wifi", "Pool", "Restaurant", "Parking"],
-      description: "รีสอร์ทหรูหราริมชายหาดพร้อมวิวทะเลสุดงาม",
-    },
-    {
-      id: 2,
-      name: "Mountain View Hotel Chiang Mai",
-      location: "เชียงใหม่, ประเทศไทย",
-      price: "฿2,200",
-      rating: 4.6,
-      reviews: 892,
-      image: "https://images.unsplash.com/photo-1564501049412-61c2a3083791?w=400&h=250&fit=crop",
-      amenities: ["Wifi", "Breakfast", "Spa", "Garden"],
-      description: "โรงแรมแนวบูติกท่ามกลางธรรมชาติ",
-    },
-    {
-      id: 3,
-      name: "Urban Style Hotel Bangkok",
-      location: "กรุงเทพฯ, ประเทศไทย",
-      price: "฿1,800",
-      rating: 4.7,
-      reviews: 2156,
-      image: "https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400&h=250&fit=crop",
-      amenities: ["Wifi", "Gym", "Rooftop", "Restaurant"],
-      description: "โรงแรมสไตล์โมเดิร์นใจกลางเมือง",
-    },
-    {
-      id: 4,
-      name: "Beachfront Villa Koh Samui",
-      location: "เกาะสมุย, ประเทศไทย",
-      price: "฿4,200",
-      rating: 4.9,
-      reviews: 687,
-      image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400&h=250&fit=crop",
-      amenities: ["Private Beach", "Pool", "Spa", "Butler"],
-      description: "วิลล่าส่วนตัวหรูหราริมทะเล",
-    },
-  ];
-
   // Event Handlers
   const handleSearch = (data: SearchFormData) => {
     console.log("Search data:", data);
     // TODO: Implement search functionality
+    // ในอนาคตอาจจะ redirect ไปหน้า search results
     alert(`ค้นหาโรงแรม:\nปลายทาง: ${data.destination}\nเช็คอิน: ${data.checkinDate}\nเช็คเอาท์: ${data.checkoutDate}`);
   };
 
   const handleBookNow = (hotel: Hotel) => {
     console.log("Book hotel:", hotel);
-    // TODO: Navigate to booking page
-    alert(`จองโรงแรม: ${hotel.name}`);
+    // TODO: Navigate to booking page หรือไปยังหน้ารายละเอียดโรงแรม
+    const slug = generateHotelSlug(hotel);
+    window.location.href = `/hotel/${slug}`;
   };
 
   const handleViewAllHotels = () => {
